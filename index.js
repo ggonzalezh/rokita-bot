@@ -102,8 +102,8 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             server.queue.push(args[1]);
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
+                play(connection, message);
             });
-            play(connection, message);
             var embed = new discord.RichEmbed()
                 .addField("**Tema Agregado a la lista**, ")
                 .setColor(0x860202)
