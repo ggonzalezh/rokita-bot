@@ -22,15 +22,6 @@ async function play(connection, message) {
     var server = servers[message.guild.id];
     server.dispatcher = connection.playOpusStream(await ytdl(server.queue[0]));
     linkCancion = server.queue[0];
-    ytdl.getInfo(server.queue[0], function (err, info) {
-        cancionActual = info.title;
-        var embed = new discord.RichEmbed()
-            .addField("Sonando Ahora", " " + cancionActual)
-            .addField("Link del temaiken", " " + linkCancion)
-            .setThumbnail("https://i.kym-cdn.com/entries/icons/original/000/021/273/200w.gif")
-            .setColor(0x860202)
-        message.channel.send(embed);
-    });
     server.queue.shift();
     server.dispatcher.on("end", function () {
         if (server.queue[0]) play(connection, message);
@@ -104,20 +95,6 @@ bot.on("message", function (message) {
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                 play(connection, message);
             });
-            /*var linkValido = ytdl.validateURL(args[1]);
-
-            if (linkValido == true) {
-                server.queue.push(args[1]);
-                if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
-                    play(connection, message);
-                });
-            } else {
-                var embed = new discord.RichEmbed()
-                    .addField("ERROR", " " + "La url solo puede ser de youtube")
-                    .setThumbnail("https://cdn2.iconfinder.com/data/icons/freecns-cumulus/32/519791-101_Warning-128.png")
-                    .setColor(0x860202)
-                message.channel.send(embed);
-            }*/
             break;
         case "skip":
             var server = servers[message.guild.id];
