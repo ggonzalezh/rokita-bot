@@ -11,8 +11,6 @@ const prefix = "!";
 
 var bot = new discord.Client();
 var servers = {};
-var cancionActual;
-var linkCancion;
 var chiboloCoins;
 var uriString = process.env.MONGOLAB_URI;
 
@@ -22,7 +20,6 @@ var uriString = process.env.MONGOLAB_URI;
 async function play(connection, message) {
     var server = servers[message.guild.id];
     server.dispatcher = connection.playOpusStream(await ytdl(server.queue[0]));
-    linkCancion = server.queue[0];
     server.queue.shift();
     server.dispatcher.on("end", function () {
         if (server.queue[0]) play(connection, message);
@@ -41,7 +38,7 @@ mongoose.connect(uriString, function (err, res) {
 
 //BOT ENCENDIDO
 bot.on("ready", function () {
-    console.log(":D");
+    console.log("BOT ENCENDIDO");
     bot.user.setActivity("!Ayuda");
 });
 
@@ -95,6 +92,10 @@ bot.on("message", function (message) {
             server.queue.push(args[1]);
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                 play(connection, message);
+                var embed = new discord.RichEmbed()
+                .addField("**Tema Agregado a la lista**")
+                .setColor(0x860202)
+            message.channel.send(embed);
             });
             break;
         case "skip":
@@ -109,7 +110,7 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
                 var embed = new discord.RichEmbed()
-                    .addField(":regional_indicator_g: :regional_indicator_g:", ":mute: Cago la C L O W N - F I E S T A :feelsbadman:")
+                    .addField(":regional_indicator_g: :regional_indicator_g:", ":mute: Cago la C L O W N - F I E S T A <:pepehands:573857208857657354>")
                     .setColor(0x860202)
                 message.channel.send(embed);
                 message.guild.voiceConnection.disconnect();
