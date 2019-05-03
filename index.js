@@ -1,5 +1,5 @@
 const discord = require("discord.js");
-const ytdl = require("ytdl-core");
+const ytdl = require('ytdl-core-discord');
 const moment = require("moment");
 const acostadazo = require("./modelo/acostadazo.js")
 const monedas = require("./modelo/monedas.js");
@@ -18,9 +18,9 @@ var uriString = process.env.MONGOLAB_URI;
 
 
 //FUNCION DE LA MUSICA
-function play(connection, message) {
+async function play(connection, message) {
     var server = servers[message.guild.id];
-    server.dispatcher = connection.playStream(ytdl(server.queue[0], { filter: 'audioonly', liveBuffer: 50000, highWaterMark: 10000 }));
+    server.dispatcher = connection.playOpusStream(await ytdl(server.queue[0]));
     linkCancion = server.queue[0];
     ytdl.getInfo(server.queue[0], function (err, info) {
         cancionActual = info.title;
