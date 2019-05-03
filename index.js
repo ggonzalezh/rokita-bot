@@ -105,6 +105,7 @@ bot.on("message", function (message) {
             var linkValido = ytdl.validateURL(args[1]);
 
             if (linkValido == true) {
+                server.queue.push(args[1]);
                 ytdl.getInfo(server.queue[0], function (err, info) {
                     cancionActual = info.title;
                     var embed = new discord.RichEmbed()
@@ -112,7 +113,6 @@ bot.on("message", function (message) {
                         .setColor(0x860202)
                     message.channel.send(embed);
                 });
-                server.queue.push(args[1]);
                 if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                     play(connection, message);
                 });
