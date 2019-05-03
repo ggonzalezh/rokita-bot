@@ -29,7 +29,7 @@ async function play(connection, message) {
         var embed = new discord.RichEmbed()
             .addField("Sonando Ahora", " " + cancionActual)
             .addField("Link del temaiken", " " + linkCancion)
-            .setThumbnail("https://i.kym-cdn.com/entries/icons/original/000/021/273/200w.gif")
+            .setThumbnail("https://thumbs.gfycat.com/FreeEnragedGrasshopper-size_restricted.gif")
             .setColor(0x860202)
         message.channel.send(embed);
     });
@@ -106,6 +106,13 @@ bot.on("message", function (message) {
 
             if (linkValido == true) {
                 server.queue.push(args[1]);
+                ytdl.getInfo(server.queue[0], function (err, info) {
+                    cancionActual = info.title;
+                    var embed = new discord.RichEmbed()
+                        .addField("Cancion Agregada", " " + cancionActual)
+                        .setColor(0x860202)
+                    message.channel.send(embed);
+                });
                 if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                     play(connection, message);
                 });
