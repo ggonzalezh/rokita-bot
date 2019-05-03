@@ -12,6 +12,8 @@ const prefix = "!";
 var bot = new discord.Client();
 var servers = {};
 var chiboloCoins;
+var cancionActual;
+var linkCancion;
 var uriString = process.env.MONGOLAB_URI;
 
 
@@ -20,6 +22,16 @@ var uriString = process.env.MONGOLAB_URI;
 async function play(connection, message) {
     var server = servers[message.guild.id];
     server.dispatcher = connection.playOpusStream(await ytdl(server.queue[0]));
+    linkCancion = server.queue[0];
+    ytdl.getInfo(server.queue[0], function (err, info) {
+        cancionActual = info.title;
+        var embed = new discord.RichEmbed()
+            .addField("Sonando Ahora", " " + cancionActual)
+            .addField("Link del temaiken", " " + linkCancion)
+            .setThumbnail("https://i.kym-cdn.com/entries/icons/original/000/021/273/200w.gif")
+            .setColor(0x860202)
+        message.channel.send(embed);
+    });
     server.queue.shift();
     server.dispatcher.on("end", function () {
         if (server.queue[0]) play(connection, message);
@@ -50,7 +62,7 @@ bot.on("guildMemberAdd", function (member) {
 //COMANDOS POR CHAT
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
-    chiboloCoins =  1;
+    chiboloCoins = 1;
     monedas.findOne({
         userID: message.author.id,
         serverID: message.guild.id
@@ -88,15 +100,14 @@ bot.on("message", function (message) {
             };
 
             var server = servers[message.guild.id];
-
             server.queue.push(args[1]);
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
-                play(connection, message);
-                var embed = new discord.RichEmbed()
-                .addField("**Tema Agregado a la lista**")
+            });
+            play(connection, message);
+            var embed = new discord.RichEmbed()
+                .addField("**Tema Agregado a la lista**, ")
                 .setColor(0x860202)
             message.channel.send(embed);
-            });
             break;
         case "skip":
             var server = servers[message.guild.id];
@@ -224,7 +235,7 @@ bot.on("message", function (message) {
                             embed.setAuthor("Registros de Acostadazos de: " + elemento.reportado)
                             embed.addField("Última vez visto", " " + elemento.fechaReporte)
                             embed.addField("Comentario", " " + elemento.razon);
-                            embed.addField("Reporte hecho por", " "+ elemento.reportadoPor);
+                            embed.addField("Reporte hecho por", " " + elemento.reportadoPor);
                             embed.addBlankField();
                             embed.setFooter("FIN DEL REPORTE", "https://i.imgur.com/MpdmmVO.png")
                             embed.setThumbnail("https://cdn.drawception.com/images/panels/2016/4-22/LmOkddqs2j-4.png")
