@@ -113,8 +113,8 @@ bot.on("message", function (message) {
                     .setThumbnail("https://cdn2.iconfinder.com/data/icons/freecns-cumulus/32/519791-101_Warning-128.png")
                     .setColor(0x860202)
                 message.channel.send(embed);
-            }
-            break;*/
+            }*/
+            break;
         case "skip":
             var server = servers[message.guild.id];
             if (server.dispatcher) server.dispatcher.end();
