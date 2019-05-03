@@ -1,5 +1,6 @@
 const discord = require("discord.js");
-const ytdl = require('ytdl-core-discord');
+const ytdl = require("ytdl-core");
+const dtdl = require('ytdl-core-discord');
 const moment = require("moment");
 const acostadazo = require("./modelo/acostadazo.js")
 const monedas = require("./modelo/monedas.js");
@@ -11,9 +12,9 @@ const prefix = "!";
 
 var bot = new discord.Client();
 var servers = {};
-var chiboloCoins;
 var cancionActual;
 var linkCancion;
+var chiboloCoins;
 var uriString = process.env.MONGOLAB_URI;
 
 
@@ -21,7 +22,7 @@ var uriString = process.env.MONGOLAB_URI;
 //FUNCION DE LA MUSICA
 async function play(connection, message) {
     var server = servers[message.guild.id];
-    server.dispatcher = connection.playOpusStream(await ytdl(server.queue[0]));
+    server.dispatcher = connection.playOpusStream(await dtdl(server.queue[0]));
     linkCancion = server.queue[0];
     ytdl.getInfo(server.queue[0], function (err, info) {
         cancionActual = info.title;
@@ -100,14 +101,21 @@ bot.on("message", function (message) {
             };
 
             var server = servers[message.guild.id];
-            server.queue.push(args[1]);
-            if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
-                play(connection, message);
-            });
-            var embed = new discord.RichEmbed()
-                .addField("**Tema Agregado a la lista**, ")
-                .setColor(0x860202)
-            message.channel.send(embed);
+
+            var linkValido = ytdl.validateURL(args[1]);
+
+            if (linkValido == true) {
+                server.queue.push(args[1]);
+                if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
+                    play(connection, message);
+                });
+            } else {
+                var embed = new discord.RichEmbed()
+                    .addField("ERROR", " " + "La url solo puede ser de youtube")
+                    .setThumbnail("https://cdn2.iconfinder.com/data/icons/freecns-cumulus/32/519791-101_Warning-128.png")
+                    .setColor(0x860202)
+                message.channel.send(embed);
+            }
             break;
         case "skip":
             var server = servers[message.guild.id];
