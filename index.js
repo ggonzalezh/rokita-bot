@@ -100,7 +100,7 @@ bot.on("message", function (message) {
 
             var server = servers[message.guild.id];
 
-            var linkValido = ytdl.validateURL(args[1]);
+            /*var linkValido = ytdl.validateURL(args[1]);
 
             if (linkValido == true) {
                 server.queue.push(args[1]);
@@ -114,7 +114,7 @@ bot.on("message", function (message) {
                     .setColor(0x860202)
                 message.channel.send(embed);
             }
-            break;
+            break;*/
         case "skip":
             var server = servers[message.guild.id];
             if (server.dispatcher) server.dispatcher.end();
