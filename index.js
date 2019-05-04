@@ -136,7 +136,7 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
                 var embed = new discord.RichEmbed()
-                    .addField("**:mute: Cago la C L O W N - F I E S T A**", " ")
+                    .addField("FUE WENO**", ":mute: Cago la C L O W N - F I E S T A")
                     .setColor(0x860202)
                 message.channel.send(embed);
                 message.guild.voiceConnection.disconnect();
