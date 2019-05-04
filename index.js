@@ -28,7 +28,7 @@ async function play(connection, message) {
         cancionActual = info.title;
         var embed = new discord.RichEmbed()
             .addField("Sonando Ahora", " " + cancionActual)
-            .addField("Link del temaiken", " " + linkCancion)
+            .addField("Link del tema", " " + linkCancion)
             .setThumbnail("https://thumbs.gfycat.com/FreeEnragedGrasshopper-size_restricted.gif")
             .setColor(0x860202)
         message.channel.send(embed);
@@ -136,7 +136,7 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
                 var embed = new discord.RichEmbed()
-                    .addField(":regional_indicator_g: :regional_indicator_g:", ":mute: Cago la C L O W N - F I E S T A <:pepehands:573857208857657354>")
+                    .addField("**:mute: Cago la C L O W N - F I E S T A**", " ")
                     .setColor(0x860202)
                 message.channel.send(embed);
                 message.guild.voiceConnection.disconnect();
