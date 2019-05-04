@@ -1,5 +1,6 @@
 const discord = require("discord.js");
 const ytdl = require("ytdl-core");
+const dtdl = require('ytdl-core-discord');
 const moment = require("moment");
 const acostadazo = require("./modelo/acostadazo.js")
 const monedas = require("./modelo/monedas.js");
@@ -17,17 +18,18 @@ var chiboloCoins;
 var uriString = process.env.MONGOLAB_URI;
 
 
+
 //FUNCION DE LA MUSICA
-function play(connection, message) {
+async function play(connection, message) {
     var server = servers[message.guild.id];
-    server.dispatcher = connection.playStream(ytdl(server.queue[0], { filter: 'audioonly', liveBuffer: 50000, highWaterMark: 10000 }));
+    server.dispatcher = connection.playOpusStream(await dtdl(server.queue[0]));
     linkCancion = server.queue[0];
     ytdl.getInfo(server.queue[0], function (err, info) {
         cancionActual = info.title;
         var embed = new discord.RichEmbed()
             .addField("Sonando Ahora", " " + cancionActual)
-            .addField("Link del temaiken", " " + linkCancion)
-            .setThumbnail("https://i.kym-cdn.com/entries/icons/original/000/021/273/200w.gif")
+            .addField("Link del tema", " " + linkCancion)
+            .setThumbnail("https://thumbs.gfycat.com/FreeEnragedGrasshopper-size_restricted.gif")
             .setColor(0x860202)
         message.channel.send(embed);
     });
@@ -49,7 +51,7 @@ mongoose.connect(uriString, function (err, res) {
 
 //BOT ENCENDIDO
 bot.on("ready", function () {
-    console.log(":D");
+    console.log("BOT ENCENDIDO");
     bot.user.setActivity("!Ayuda");
 });
 
@@ -61,7 +63,7 @@ bot.on("guildMemberAdd", function (member) {
 //COMANDOS POR CHAT
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
-    chiboloCoins =  1;
+    chiboloCoins = 1;
     monedas.findOne({
         userID: message.author.id,
         serverID: message.guild.id
@@ -104,6 +106,13 @@ bot.on("message", function (message) {
 
             if (linkValido == true) {
                 server.queue.push(args[1]);
+                ytdl.getInfo(server.queue[0], function (err, info) {
+                    cancionActual = info.title;
+                    var embed = new discord.RichEmbed()
+                        .addField("Cancion Agregada", " " + cancionActual)
+                        .setColor(0x860202)
+                    message.channel.send(embed);
+                });
                 if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                     play(connection, message);
                 });
@@ -127,7 +136,7 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             if (message.guild.voiceConnection) {
                 var embed = new discord.RichEmbed()
-                    .addField(":regional_indicator_g: :regional_indicator_g:", ":mute: Cago la C L O W N - F I E S T A :feelsbadman:")
+                    .addField("FUE WENO", ":mute: Cago la C L O W N - F I E S T A")
                     .setColor(0x860202)
                 message.channel.send(embed);
                 message.guild.voiceConnection.disconnect();
@@ -241,7 +250,7 @@ bot.on("message", function (message) {
                             embed.setAuthor("Registros de Acostadazos de: " + elemento.reportado)
                             embed.addField("Última vez visto", " " + elemento.fechaReporte)
                             embed.addField("Comentario", " " + elemento.razon);
-                            embed.addField("Reporte hecho por", " "+ elemento.reportadoPor);
+                            embed.addField("Reporte hecho por", " " + elemento.reportadoPor);
                             embed.addBlankField();
                             embed.setFooter("FIN DEL REPORTE", "https://i.imgur.com/MpdmmVO.png")
                             embed.setThumbnail("https://cdn.drawception.com/images/panels/2016/4-22/LmOkddqs2j-4.png")
