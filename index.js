@@ -6,6 +6,8 @@ const acostadazo = require("./modelo/acostadazo.js")
 const monedas = require("./modelo/monedas.js");
 const array = require("./arrays");
 const mongoose = require('mongoose');
+const experiencia = require("./modelo/experiencia.js");
+const rangos = require("./modelo/rangos.js");
 
 //Activar comandos
 const prefix = "!";
@@ -41,17 +43,17 @@ async function play(connection, message) {
 }
 
 mongoose.connect(uriString, function (err, res) {
-    if (err) {
-        console.log('ERROR al intentar conectar a la base de datos' + '. ' + err);
-    } else {
+    if (res) {
         console.log("Conectado a la base de datos de mLAB");
+    } else {
+        console.log("Ocurrio un error en MongoDB => " + err);
     }
 });
 
 
 //BOT ENCENDIDO
 bot.on("ready", function () {
-    console.log("BOT ENCENDIDO");
+    console.log("Rokitabot ON!");
     bot.user.setActivity("!Ayuda");
 });
 
@@ -80,6 +82,38 @@ bot.on("message", function (message) {
         } else {
             money.money = money.money + chiboloCoins;
             money.save().catch(err => console.log(err));
+        }
+    });
+
+    //SISTEMA DE NIVELES
+    experiencia.findOne({
+        userID: message.author.id,
+        serverID: message.guild.id
+    }, (err, exp) => {
+        if (err) {
+            console.log("Ocurrio un error en el sistema de niveles. ERROR: " + err);
+        }
+        if (!exp) {
+            const newUser = new experiencia({
+                username: message.author.username,
+                userID: message.author.id,
+                serverID: message.guild.id,
+                level: 1,
+                puntos: 0,
+                rango: "Chibolo"
+            })
+            newUser.save().catch(err => console.log(err));
+        } else {
+            exp.puntos++;
+            rangos.findOne({
+                rangoID: exp.level
+            }, (err, rango) => {
+                if (err) {
+                    console.log("Ocurrio un error en la obtencion de niveles");
+                } else {
+                    console.log(rango);
+                }
+            });
         }
     });
     if (!message.content.startsWith(prefix)) return;
