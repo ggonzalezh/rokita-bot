@@ -100,7 +100,7 @@ bot.on("message", function (message) {
                 serverID: message.guild.id,
                 level: 1,
                 puntos: 0,
-                rango: "Chibolo"
+                rango: "Sin rango"
             })
             newUser.save().catch(err => console.log(err));
         } else {
@@ -111,7 +111,8 @@ bot.on("message", function (message) {
                 if (err) {
                     console.log("Ocurrio un error en la obtencion de niveles");
                 } else {
-                    console.log(rango);
+                    exp.rango = rango.rangoNombre
+                    exp.save().catch(err => console.log(err));
                 }
             });
         }
