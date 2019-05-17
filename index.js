@@ -104,7 +104,13 @@ bot.on("message", function (message) {
             })
             newUser.save().catch(err => console.log(err));
         } else {
-            exp.puntos++;
+            exp.puntos = exp.puntos + 1;
+            const curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
+            console.log(curLevel);
+            if (exp.puntos < curLevel) {
+                exp.level = exp.level + 1;
+                message.channel.send("subiste a nivel "+ exp.level);
+            }
             rangos.findOne({
                 rangoID: exp.level
             }, (err, rango) => {
@@ -117,6 +123,11 @@ bot.on("message", function (message) {
             });
         }
     });
+
+    if(score.level < curLevel) {
+        score.level++;
+        message.reply(`You've leveled up to level **${curLevel}**! Ain't that dandy?`);
+      }
     if (!message.content.startsWith(prefix)) return;
     var args = message.content.substring(prefix.length).split(" ");
     switch (args[0].toLowerCase()) {
