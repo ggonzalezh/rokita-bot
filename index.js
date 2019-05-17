@@ -123,11 +123,6 @@ bot.on("message", function (message) {
             });
         }
     });
-
-    if(score.level < curLevel) {
-        score.level++;
-        message.reply(`You've leveled up to level **${curLevel}**! Ain't that dandy?`);
-      }
     if (!message.content.startsWith(prefix)) return;
     var args = message.content.substring(prefix.length).split(" ");
     switch (args[0].toLowerCase()) {
