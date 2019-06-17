@@ -104,17 +104,19 @@ bot.on("message", function (message) {
                 serverID: message.guild.id,
                 level: 1,
                 puntos: 0,
-                rango: "Sin rango"
+                rango: "Sin rango",
+                lvlRestante: "Sin puntos"
             })
             newUser.save().catch(err => console.log(err));
         } else {
             exp.puntos++;
             const curLevel = Math.floor(0.9 * Math.sqrt(exp.puntos));
+            exp.lvlRestante = curLevel.toString();
             if (exp.level < curLevel) {
                 exp.level = exp.level + 1;
                 var embed = new discord.RichEmbed()
-                .addField("Level up!", " " + exp.username + " subiste a nivel " + exp.level)
-                .setColor(0x860202)
+                    .addField("Level up!", " " + exp.username + " subiste a nivel " + exp.level)
+                    .setColor(0x860202)
                 message.channel.send(embed);
             }
             rangos.findOne({
@@ -394,16 +396,27 @@ bot.on("message", function (message) {
             message.channel.send(embed);
             break;
         case "cuenta":
-            var fechaCreacion = moment(message.author.createdAt.toString()).format("DD/MM/YYYY");
-            var embed = new discord.RichEmbed()
-                .setAuthor("Información de la cuenta: ")
-                .addField("Nickname", " " + message.author.username)
-                .addField("Usuario", " " + message.author.tag)
-                .addField("ID de la cuenta", " " + message.author.id)
-                .addField("Fecha de creación", " " + fechaCreacion)
-                .setColor(0x860202)
-                .setThumbnail(message.author.avatarURL);
-            message.channel.send(embed);
+            experiencia.findOne({
+                userID: message.author.id,
+                serverID: message.guild.id
+            }, (err, exp) => {
+                if (err) {
+                    console.log("Ocurrio  un error -> " + err);
+                    return
+                }
+                var fechaCreacion = moment(message.author.createdAt.toString()).format("DD/MM/YYYY");
+                var embed = new discord.RichEmbed()
+                    .setAuthor("Información de la cuenta: ")
+                    .addField("Nickname", " " + message.author.username)
+                    .addField("Usuario", " " + message.author.tag)
+                    .addField("Fecha de creación", " " + fechaCreacion)
+                    .addField("Nivel de la cuenta", " " + exp.level)
+                    .addField("Rango", " " + exp.rango)
+                    .addField("Puntos Restantes", " " + exp.lvlRestante) 
+                    .setColor(0x860202)
+                    .setThumbnail(message.author.avatarURL);
+                message.channel.send(embed);
+            });
             break;
         case "profecia":
             var embed = new discord.RichEmbed()
