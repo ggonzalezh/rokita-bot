@@ -6,6 +6,8 @@ const acostadazo = require("./modelo/acostadazo.js")
 const monedas = require("./modelo/monedas.js");
 const array = require("./arrays");
 const mongoose = require('mongoose');
+const experiencia = require("./modelo/experiencia.js");
+const rangos = require("./modelo/rangos.js");
 
 //Activar comandos
 const prefix = "!";
@@ -20,11 +22,15 @@ var uriString = process.env.MONGOLAB_URI;
 
 
 //FUNCION DE LA MUSICA
-async function play(connection, message) {
+async function play(connection, message, err) {
     var server = servers[message.guild.id];
     server.dispatcher = connection.playOpusStream(await dtdl(server.queue[0]));
     linkCancion = server.queue[0];
     ytdl.getInfo(server.queue[0], function (err, info) {
+        if (err) {
+            console.log("ERROR URL")
+            return
+        }
         cancionActual = info.title;
         var embed = new discord.RichEmbed()
             .addField("Sonando Ahora", " " + cancionActual)
@@ -41,17 +47,17 @@ async function play(connection, message) {
 }
 
 mongoose.connect(uriString, function (err, res) {
-    if (err) {
-        console.log('ERROR al intentar conectar a la base de datos' + '. ' + err);
-    } else {
+    if (res) {
         console.log("Conectado a la base de datos de mLAB");
+    } else {
+        console.log("Ocurrio un error en MongoDB => " + err);
     }
 });
 
 
 //BOT ENCENDIDO
 bot.on("ready", function () {
-    console.log("BOT ENCENDIDO");
+    console.log("Rokitabot ON!");
     bot.user.setActivity("!Ayuda");
 });
 
@@ -80,6 +86,47 @@ bot.on("message", function (message) {
         } else {
             money.money = money.money + chiboloCoins;
             money.save().catch(err => console.log(err));
+        }
+    });
+
+    //SISTEMA DE NIVELES
+    experiencia.findOne({
+        userID: message.author.id,
+        serverID: message.guild.id
+    }, (err, exp) => {
+        if (err) {
+            console.log("Ocurrio un error en el sistema de niveles. ERROR: " + err);
+        }
+        if (!exp) {
+            const newUser = new experiencia({
+                username: message.author.username,
+                userID: message.author.id,
+                serverID: message.guild.id,
+                level: 1,
+                puntos: 0,
+                rango: "Sin rango"
+            })
+            newUser.save().catch(err => console.log(err));
+        } else {
+            exp.puntos++;
+            const curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
+            if (exp.level < curLevel) {
+                exp.level = exp.level + 1;
+                var embed = new discord.RichEmbed()
+                    .addField("Level up!", " " + exp.username + " subiste a nivel " + exp.level)
+                    .setColor(0x860202)
+                message.channel.send(embed);
+            }
+            rangos.findOne({
+                rangoID: exp.level
+            }, (err, rango) => {
+                if (err) {
+                    console.log("Ocurrio un error en la obtencion de niveles");
+                } else {
+                    exp.rango = rango.rangoNombre
+                    exp.save().catch(err => console.log(err));
+                }
+            });
         }
     });
     if (!message.content.startsWith(prefix)) return;
@@ -346,17 +393,46 @@ bot.on("message", function (message) {
                 .setColor(0x860202)
             message.channel.send(embed);
             break;
+        case "nivel":
+                experiencia.findOne({
+                    userID: message.author.id,
+                    serverID: message.guild.id
+                }, (err, exp) => {
+                    if (err) {
+                        console.log("Ocurrio  un error -> " + err);
+                        return
+                    }
+                    var embed = new discord.RichEmbed()
+                        .setAuthor("Cuenta: " + message.author.tag)
+                        .addField("Nickname", " " + message.author.username)
+                        .addField("Nivel de la cuenta", " " + exp.level)
+                        .addField("Rango", " " + exp.rango)
+                        .setColor(0x860202)
+                        .setThumbnail(message.author.avatarURL);
+                    message.channel.send(embed);
+                });
+            break;
         case "cuenta":
-            var fechaCreacion = moment(message.author.createdAt.toString()).format("DD/MM/YYYY");
-            var embed = new discord.RichEmbed()
-                .setAuthor("Información de la cuenta: ")
-                .addField("Nickname", " " + message.author.username)
-                .addField("Usuario", " " + message.author.tag)
-                .addField("ID de la cuenta", " " + message.author.id)
-                .addField("Fecha de creación", " " + fechaCreacion)
-                .setColor(0x860202)
-                .setThumbnail(message.author.avatarURL);
-            message.channel.send(embed);
+            experiencia.findOne({
+                userID: message.author.id,
+                serverID: message.guild.id
+            }, (err, exp) => {
+                if (err) {
+                    console.log("Ocurrio  un error -> " + err);
+                    return
+                }
+                var fechaCreacion = moment(message.author.createdAt.toString()).format("DD/MM/YYYY");
+                var embed = new discord.RichEmbed()
+                    .setAuthor("Información de la cuenta: ")
+                    .addField("Nickname", " " + message.author.username)
+                    .addField("Usuario", " " + message.author.tag)
+                    .addField("Fecha de creación", " " + fechaCreacion)
+                    .addField("Nivel de la cuenta", " " + exp.level)
+                    .addField("Rango", " " + exp.rango)
+                    .setColor(0x860202)
+                    .setThumbnail(message.author.avatarURL);
+                message.channel.send(embed);
+            });
             break;
         case "profecia":
             var embed = new discord.RichEmbed()
