@@ -105,7 +105,7 @@ bot.on("message", function (message) {
             newUser.save().catch(err => console.log(err));
         } else {
             exp.puntos = exp.puntos + 1;
-            const curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
+            var curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
             console.log(curLevel);
             if (exp.puntos < curLevel) {
                 exp.level = exp.level + 1;
