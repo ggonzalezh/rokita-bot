@@ -27,6 +27,10 @@ async function play(connection, message) {
     server.dispatcher = connection.playOpusStream(await dtdl(server.queue[0]));
     linkCancion = server.queue[0];
     ytdl.getInfo(server.queue[0], function (err, info) {
+        if (err) {
+            console.log("ERROR URL")
+            return
+        }
         cancionActual = info.title;
         var embed = new discord.RichEmbed()
             .addField("Sonando Ahora", " " + cancionActual)
@@ -102,15 +106,17 @@ bot.on("message", function (message) {
                 puntos: 0,
                 rango: "Sin rango"
             })
+            console.log("Usuario creado: " + username + " Nivel: " + level + " pun");
             newUser.save().catch(err => console.log(err));
         } else {
-            console.log("Puntos de BD: "+exp.puntos);
             exp.puntos++;
-            const curLevel = Math.floor(0.2 * Math.sqrt(exp.puntos));
-            console.log("Math: "+curLevel);
+            const curLevel = Math.floor(0.9 * Math.sqrt(exp.puntos));
             if (exp.level < curLevel) {
                 exp.level = exp.level + 1;
-                message.channel.send("subiste a nivel "+ exp.level);
+                var embed = new discord.RichEmbed()
+                .addField("Level UP!", " " + exp.username + " subiste a nivel: " + exp.level)
+                .setColor(0x860202)
+                message.channel.send(embed);
             }
             rangos.findOne({
                 rangoID: exp.level
