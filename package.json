@@ -9,7 +9,7 @@
   "author": "Misser",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.3.2",
+    "discord.js": "^11.5.1",
     "moment": "^2.22.2",
     "mongoose": "^5.3.12",
     "opusscript": "0.0.6",

@@ -22,7 +22,7 @@ var uriString = process.env.MONGOLAB_URI;
 
 
 //FUNCION DE LA MUSICA
-async function play(connection, message) {
+async function play(connection, message, err) {
     var server = servers[message.guild.id];
     server.dispatcher = connection.playOpusStream(await dtdl(server.queue[0]));
     linkCancion = server.queue[0];
@@ -113,7 +113,7 @@ bot.on("message", function (message) {
             if (exp.level < curLevel) {
                 exp.level = exp.level + 1;
                 var embed = new discord.RichEmbed()
-                .addField("Level UP!", " " + exp.username + " subiste a nivel: " + exp.level)
+                .addField("Level up!", " " + exp.username + " subiste a nivel " + exp.level)
                 .setColor(0x860202)
                 message.channel.send(embed);
             }
