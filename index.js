@@ -106,7 +106,7 @@ bot.on("message", function (message) {
         } else {
             console.log("Puntos de BD: "+exp.puntos);
             exp.puntos++;
-            const curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
+            const curLevel = Math.floor(0.2 * Math.sqrt(exp.puntos));
             console.log("Math: "+curLevel);
             if (exp.level < curLevel) {
                 exp.level = exp.level + 1;
