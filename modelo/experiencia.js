@@ -6,8 +6,7 @@ const experiencia = mongoose.Schema({
     serverID: String,
     level: Number,
     puntos: Number,
-    rango: String,
-    lvlRestante: String
+    rango: String
 });
 
 module.exports = mongoose.model("experiencia", experiencia);

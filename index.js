@@ -104,14 +104,12 @@ bot.on("message", function (message) {
                 serverID: message.guild.id,
                 level: 1,
                 puntos: 0,
-                rango: "Sin rango",
-                lvlRestante: "Sin puntos"
+                rango: "Sin rango"
             })
             newUser.save().catch(err => console.log(err));
         } else {
             exp.puntos++;
-            const curLevel = Math.floor(0.9 * Math.sqrt(exp.puntos));
-            exp.lvlRestante = curLevel.toString();
+            const curLevel = Math.floor(0.1 * Math.sqrt(exp.puntos));
             if (exp.level < curLevel) {
                 exp.level = exp.level + 1;
                 var embed = new discord.RichEmbed()
@@ -395,6 +393,25 @@ bot.on("message", function (message) {
                 .setColor(0x860202)
             message.channel.send(embed);
             break;
+        case "nivel":
+                experiencia.findOne({
+                    userID: message.author.id,
+                    serverID: message.guild.id
+                }, (err, exp) => {
+                    if (err) {
+                        console.log("Ocurrio  un error -> " + err);
+                        return
+                    }
+                    var embed = new discord.RichEmbed()
+                        .setAuthor("Cuenta: " + message.author.tag)
+                        .addField("Nickname", " " + message.author.username)
+                        .addField("Nivel de la cuenta", " " + exp.level)
+                        .addField("Rango", " " + exp.rango)
+                        .setColor(0x860202)
+                        .setThumbnail(message.author.avatarURL);
+                    message.channel.send(embed);
+                });
+            break;
         case "cuenta":
             experiencia.findOne({
                 userID: message.author.id,
@@ -412,7 +429,6 @@ bot.on("message", function (message) {
                     .addField("Fecha de creación", " " + fechaCreacion)
                     .addField("Nivel de la cuenta", " " + exp.level)
                     .addField("Rango", " " + exp.rango)
-                    .addField("Puntos Restantes", " " + exp.lvlRestante) 
                     .setColor(0x860202)
                     .setThumbnail(message.author.avatarURL);
                 message.channel.send(embed);
