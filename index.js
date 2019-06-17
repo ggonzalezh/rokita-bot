@@ -106,7 +106,7 @@ bot.on("message", function (message) {
                 puntos: 0,
                 rango: "Sin rango"
             })
-            console.log("Usuario creado: " + username + " Nivel: " + level + " pun");
+            console.log("Usuario creado: " + exp.username + " Nivel: " + exp.level + " pun");
             newUser.save().catch(err => console.log(err));
         } else {
             exp.puntos++;
