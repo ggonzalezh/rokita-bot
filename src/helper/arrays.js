@@ -55,6 +55,19 @@ var bienvenido = [
     "burro of mrd!"
 ];
 
+var LePusiste = [
+    "Le pusiste weno con esta cancion,",
+    "ANDATEEEEE PESAOOOOOOOOOOOOO,",
+    "ME VUELVO LOCOOOOOOO CON ESTA,",
+    "ALUCINO CON ESTE TEMITA,",
+    "ALUCINAAA QUE MAAAN,",
+    "AHORA TE HACES EL CALLADITO?,",
+    "HABLA PE CHINO MARICON,",
+    "MASCALA OVER,",
+    "TE PUSISTE BRAVO CACHUPIN,"
+]
+
+module.exports.lePusiste = LePusiste;
 module.exports.dota = dota;
 module.exports.color = color;
 module.exports.bienvenido = bienvenido;
