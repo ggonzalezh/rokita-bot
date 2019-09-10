@@ -68,7 +68,11 @@ client.on("message", (message) => {
                     });
                 }
             } else {
-                embed = createEmbedMessage(["ERROR", "La url solo puede ser de youtube"]);
+                fields = [{
+                    name: message.author.username,
+                    value: "La url debe ser de Youtube"
+                }]
+                embed = createEmbedMessage(undefined, fields, 'https://cdn.icon-icons.com/icons2/1584/PNG/512/3721679-youtube_108064.png', undefined);
                 message.channel.send(embed);
             }
             break;
