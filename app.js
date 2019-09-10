@@ -1,10 +1,10 @@
 const { Client } = require("discord.js");
 const { connectMongoDb } = require('./src/service/database/connect');
-const { chiboloCoins, getChiboloCoins } = require('./src/service/database/coins');
+const { insertCoins, getCoins } = require('./src/service/database/coins');
 const { experienceSystem } = require('./src/service/database/experience');
 const { createEmbedMessage, createHelp } = require('./src/helper/discord');
-const { validateUrl } = require('./src/service/music/helper/utils');
-const { getSongInfo } = require('./src/service/music/helper/utils')
+const { validateUrl, getSongInfo, getThumbnail } = require('./src/service/music/helper/utils');
+const { insertPlaylist, getPlaylist, deletePlaylist } = require('./src/service/database/playlist');
 const dtdl = require('ytdl-core-discord');
 const config = require('./config.json')
 const array = require("./src/helper/arrays");
@@ -13,10 +13,10 @@ const prefix = config.discord.prefix;
 const client = new Client();
 var songs = {};
 
-client.login(process.env.BOT_TOKEN);
+client.login(config.discord.token);
 
 client.on("ready", () => {
-    connectMongoDb(process.env.MONGOLAB_URI);
+    connectMongoDb(config.mongoDb.connect.uri);
     console.log("RokitaBOT ON!");
     client.user.setActivity("!Ayuda");
 });
@@ -32,7 +32,7 @@ client.on("message", (message) => {
     if (message.author.equals(client.user)) {
         return;
     }
-    chiboloCoins(message.author.id, message.guild.id, message.author.username);
+    insertCoins(message.author.id, message.guild.id, message.author.username);
     experienceSystem(message.author.id, message.guild.id, message.author.username);
     if (!message.content.startsWith(prefix)) {
         return;
@@ -57,18 +57,24 @@ client.on("message", (message) => {
                         queue: []
                     }
                 }
-                let isEarly = "isEarly";
-                getSongInfo(args[1], message.author.username, message.author.avatarURL, isEarly, message).then(value => message.channel.send(value));
-                let listSongs = songs[message.guild.id];
-
-                listSongs.queue.push(args[1]);
-                if (!message.guild.voiceConnection) {
-                    message.member.voiceChannel.join().then((connection) => {
-                        playList(connection, message)
-                    });
-                }
+                getSongInfo(args[1]).then(value => {
+                    let listSongs = songs[message.guild.id];
+                    listSongs.queue.push(args[1]);
+                    insertPlaylist(message.author.id, message.author.username
+                        , message.guild.id, message.author.avatarURL, value.info.id, value.info.url, value.info.title)
+                    message.channel.send(message.author.toString() + ", La canción `" + value.info.title + "` fue agregada a la playlist.")
+                    if (!message.guild.voiceConnection) {
+                        message.member.voiceChannel.join().then((connection) => {
+                            playList(connection, message, args[1]);
+                        });
+                    }
+                });
             } else {
-                embed = createEmbedMessage(["ERROR", "La url solo puede ser de youtube"]);
+                fields = [{
+                    name: message.author.username,
+                    value: "La url debe ser de Youtube"
+                }]
+                embed = createEmbedMessage(undefined, fields, 'https://cdn.icon-icons.com/icons2/1584/PNG/512/3721679-youtube_108064.png', undefined);
                 message.channel.send(embed);
             }
             break;
@@ -83,32 +89,38 @@ client.on("message", (message) => {
                 message.guild.voiceConnection.disconnect();
             }
             break;
-        /*case "chibolocoins":
-            getChiboloCoins(message.author.id, message.guild.id).then(value => {
+        case "playlist":
+
+            break;
+        case "coins":
+            getCoins(message.author.id, message.guild.id).then(value => {
                 fields = [{
                     name: "Propietario de la cuenta",
                     value: message.author.username
                 },
                 {
-                    name: "ChiboloCoins",
+                    name: "Coins",
                     value: value.user.coins
                 }]
                 embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
                 message.channel.send(embed);
+            }).catch(err => {
+                message.channel.send(message.author.toString() + " ocurrió un error al obtener tus coins");
+                console.log(err.error);
             });
             break;
-        case "cuenta":
-            let createdDate = formatDate(message.author.createdAt);
-            break;
-        case "profecia":
-            break;
-        case "piel":
-            message.channel.send(message.author.toString() + " Tu color de piel es " + array.color[Math.floor(Math.random() * array.color.length)]);
-            break;
-        case "tmr":
-            break;
-        case "10dif":
-            break;*/
+        /*        case "cuenta":
+                    let createdDate = formatDate(message.author.createdAt);
+                    break;
+                case "profecia":
+                    break;
+                case "piel":
+                    message.channel.send(message.author.toString() + " Tu color de piel es " + array.color[Math.floor(Math.random() * array.color.length)]);
+                    break;
+                case "tmr":
+                    break;
+                case "10dif":
+                    break;*/
         case "ayuda":
             fields = createHelp();
             embed = createEmbedMessage(undefined, fields, undefined, undefined);
@@ -116,7 +128,7 @@ client.on("message", (message) => {
             message.author.send(embed);
             break;
         default:
-            message.channel.send("NO EXISTE ESE COMANDO SACO WEA")
+            message.channel.send(message.author.toString() + " no existe ese comando")
     }
 });
 

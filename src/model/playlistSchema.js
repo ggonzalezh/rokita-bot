@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-    userName: String,
     userId: String,
+    userName: String,
     serverId: String,
-    avatar: String,
-    url: String,
-    nameSong: String,
+    userAvatar: String,
     idSong: String,
-    guildId: String
+    urlSong: String,
+    nameSong: String
 });
 
 var playlistSchema = mongoose.model("playlist", schema);

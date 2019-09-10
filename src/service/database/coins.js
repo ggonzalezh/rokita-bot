@@ -1,31 +1,10 @@
 const { coin } = require('../../model/coinSchema');
 
-exports.chiboloCoins = (userId, serverId, username) => {
-    var coins = 1;
-    coin.findOne({
-        userID: userId,
-        serverID: serverId
-    }, (err, res) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        if (!res) {
-            var newUser = new coin({
-                userID: user,
-                serverID: server,
-                userName: username,
-                money: coins
-            })
-            newUser.save().catch(err => console.log(err));
-        } else {
-            res.money = res.money + coins;
-            res.save().catch(err => console.log(err));
-        }
-    });
+exports.insertCoins = (userId, serverId, username) => {
+    insertCoinService(userId, serverId, username);
 };
 
-exports.getChiboloCoins = async (userId, serverId) => {
+exports.getCoins = async (userId, serverId) => {
     return await getCoinService(userId, serverId);
 }
 
@@ -37,12 +16,14 @@ var getCoinService = (userId, serverId) => {
         }, (err, res) => {
             if (err) {
                 reject({
-                    err
+                    error:{
+                        err
+                    }
                 })
             } else {
                 resolve({
-                    user:{
-                        coins: res.money
+                    user: {
+                        coins: res.coins
                     }
                 });
             }
@@ -50,3 +31,26 @@ var getCoinService = (userId, serverId) => {
     });
 }
 
+var insertCoinService = (userId, serverId, userName) => {
+    coin.findOne({
+        userID: userId,
+        serverID: serverId
+    }, (err, res) => {
+        if (err) {
+            console.log("Ocurrió un error al insertar coins al sistema");
+        } else {
+            if (!res) {
+                var newUser = new coin({
+                    userID: userId,
+                    serverID: serverId,
+                    userName: userName,
+                    coins: 1
+                })
+                newUser.save().catch(err => console.log(err));
+            } else {
+                res.coins = res.coins + 1;
+                res.save().catch(err => console.log(err));
+            }
+        }
+    });
+}

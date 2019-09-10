@@ -1,11 +1,11 @@
 {
     "mongoDb": {
         "connect": {
-            "uri": "process.env.MONGOLAB_URI"
+            "uri": "mongodb://misser:momito3914@ds217351.mlab.com:17351/rokitabot"
         }
     },
     "discord": {
-        "token": "process.env.BOT_TOKEN",
+        "token": "NTczOTY4MTIwMDM3OTAwNDI2.XXSlfg.ZeC8VwAPX8bEA8un0sLsX17RJ-M",
         "prefix": "!",
         "brokaDance": "https://images-ext-1.discordapp.net/external/IOdpN_2bXP2E2vsxXFaQiHTMrk84QN58rHbmiqxGmTw/https/thumbs.gfycat.com/FreeEnragedGrasshopper-size_restricted.gif"
     }
