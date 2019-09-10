@@ -120,7 +120,7 @@ client.on("message", (message) => {
             message.author.send(embed);
             break;
         default:
-            message.channel.send("NO EXISTE ESE COMANDO SACO WEA")
+            message.channel.send(message.author.toString() + " no existe ese comando")
     }
 });
 
