@@ -1,10 +1,10 @@
 const { coin } = require('../../model/coinSchema');
 
-exports.chiboloCoins = (user, server, username) => {
+exports.chiboloCoins = (userId, serverId, username) => {
     var coins = 1;
     coin.findOne({
-        userID: user,
-        serverID: server
+        userID: userId,
+        serverID: serverId
     }, (err, res) => {
         if (err) {
             console.log(err);
@@ -18,27 +18,35 @@ exports.chiboloCoins = (user, server, username) => {
                 money: coins
             })
             newUser.save().catch(err => console.log(err));
-        }else{
+        } else {
             res.money = res.money + coins;
             res.save().catch(err => console.log(err));
         }
     });
 };
 
-exports.getChiboloCoins = (user, server, username) => {
-    var chiboloCoins;
-    coin.findOne({
-        userID: user,
-        serverID: server,
-    }, (err, res) => {
-        if (err){
-            console.log("Ocurrio un error en el metodo getChiboloCoins: " + err);
-            chiboloCoins = undefined;
-        }else{
-            chiboloCoins = res;
-        }
-    });
+exports.getChiboloCoins = async (userId, serverId) => {
+    return await getCoinService(userId, serverId);
+}
 
-    return chiboloCoins;
+var getCoinService = (userId, serverId) => {
+    return new Promise((resolve, reject) => {
+        coin.findOne({
+            userID: userId,
+            serverID: serverId,
+        }, (err, res) => {
+            if (err) {
+                reject({
+                    err
+                })
+            } else {
+                resolve({
+                    user:{
+                        coins: res.money
+                    }
+                });
+            }
+        });
+    });
 }
 

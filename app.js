@@ -83,18 +83,19 @@ client.on("message", (message) => {
                 message.guild.voiceConnection.disconnect();
             }
             break;
-        case "chibolocoins":
-            let chiboloCoins = getChiboloCoins(message.author.id, message.guild.id, message.author.username);
-            fields = [{
-                name: "Propietario de la cuenta",
-                value: message.author.username
-            },
-            {
-                name: "Chibolo-Coins",
-                value: chiboloCoins.money
-            }]
-            embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
-            message.channel.send(embed);
+        /*case "chibolocoins":
+            getChiboloCoins(message.author.id, message.guild.id).then(value => {
+                fields = [{
+                    name: "Propietario de la cuenta",
+                    value: message.author.username
+                },
+                {
+                    name: "ChiboloCoins",
+                    value: value.user.coins
+                }]
+                embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
+                message.channel.send(embed);
+            });
             break;
         case "cuenta":
             let createdDate = formatDate(message.author.createdAt);
@@ -107,7 +108,7 @@ client.on("message", (message) => {
         case "tmr":
             break;
         case "10dif":
-            break;
+            break;*/
         case "ayuda":
             fields = createHelp();
             embed = createEmbedMessage(undefined, fields, undefined, undefined);
@@ -115,14 +116,16 @@ client.on("message", (message) => {
             message.author.send(embed);
             break;
         default:
+            embed.setImage("https://pa1.narvii.com/6565/59fb4390472f0373a936595a2b1bd36a4e171520_hq.gif")
+                .addField(message.author.username, "No existe ese comando, " + array.bienvenido[Math.floor(Math.random() * array.bienvenido.length)])
+                .setColor(0x860202)
+            message.channel.send(embed);
     }
 });
 
 var playList = async (connection, message) => {
     let playlist = songs[message.guild.id];
     playlist.dispatcher = connection.playOpusStream(await dtdl(playlist.queue[0]));
-    let isSoon = 'isSoon';
-    getSongInfo(playlist.queue[0], message.author.username, message.author.avatarURL, isSoon, message).then(value => message.channel.send(value));
     playlist.queue.shift();
     playlist.dispatcher.on("end", () => {
         if (playlist.queue[0]) {

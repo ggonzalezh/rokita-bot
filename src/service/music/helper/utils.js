@@ -6,7 +6,7 @@ const array = require('../../../helper/arrays');
 const config = require('../../../../config.json')
 
 exports.getSongInfo = async (uri, username, avatar, current, message) => {
-    let song = await ytdlInfo(uri);
+    var song = await ytdlInfo(uri);
     var embed;
     var thumbnail = getThumbnail(uri);
     if (song != undefined) {
@@ -25,8 +25,7 @@ exports.getSongInfo = async (uri, username, avatar, current, message) => {
         } else {
             let fields = [{
                 name: "Título de la canción",
-                value: song.info.title,
-
+                value: song.info.title
             }]
             let footer = {
                 text: username + ", la canción fue agregada a la playlist",
@@ -41,7 +40,7 @@ exports.getSongInfo = async (uri, username, avatar, current, message) => {
 };
 
 exports.validateUrl = (uri) => {
-    var isValidate = ytdl.validateURL(uri);
+    let isValidate = ytdl.validateURL(uri);
     return isValidate;
 }
 
