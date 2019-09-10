@@ -116,10 +116,7 @@ client.on("message", (message) => {
             message.author.send(embed);
             break;
         default:
-            embed.setImage("https://pa1.narvii.com/6565/59fb4390472f0373a936595a2b1bd36a4e171520_hq.gif")
-                .addField(message.author.username, "No existe ese comando, " + array.bienvenido[Math.floor(Math.random() * array.bienvenido.length)])
-                .setColor(0x860202)
-            message.channel.send(embed);
+            message.channel.send("NO EXISTE ESE COMANDO SACO WEA")
     }
 });
 
