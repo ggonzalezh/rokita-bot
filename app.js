@@ -13,10 +13,10 @@ const prefix = config.discord.prefix;
 const client = new Client();
 var songs = {};
 
-client.login(config.discord.token);
+client.login(process.env.BOT_TOKEN);
 
 client.on("ready", () => {
-    connectMongoDb(config.mongoDb.connect.uri);
+    connectMongoDb(process.env.MONGOLAB_URI);
     console.log("RokitaBOT ON!");
     client.user.setActivity("!Ayuda");
 });
