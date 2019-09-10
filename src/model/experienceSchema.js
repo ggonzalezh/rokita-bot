@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const experiencia = mongoose.Schema({
+const schema = mongoose.Schema({
     username: String,
     userID: String,
     serverID: String,
@@ -9,4 +9,6 @@ const experiencia = mongoose.Schema({
     rango: String
 });
 
-module.exports = mongoose.model("experiencia", experiencia);
+var experienceSchema = mongoose.model("experiencias", schema);
+
+exports.experience = experienceSchema;
