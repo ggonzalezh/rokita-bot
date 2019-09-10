@@ -4,7 +4,7 @@ const { insertCoins, getCoins } = require('./src/service/database/coins');
 const { experienceSystem } = require('./src/service/database/experience');
 const { createEmbedMessage, createHelp } = require('./src/helper/discord');
 const { validateUrl, getSongInfo, getThumbnail } = require('./src/service/music/helper/utils');
-const { insertPlaylist, getPlaylist, deletePlaylist } = require('./src/service/database/playlist');
+const { secondsToMinute } = require('./src/helper/utils');
 const dtdl = require('ytdl-core-discord');
 const config = require('./config.json')
 const array = require("./src/helper/arrays");
@@ -41,12 +41,12 @@ client.on("message", (message) => {
     switch (args[0].toLowerCase()) {
         case "play":
             if (!args[1]) {
-                message.channel.send(message.author.toString() + " Falto el link de la canción. Más Vivaldi, menos Pavarotti.");
+                message.channel.send(`${message.author.toString()} falto el link de la canción. Más Vivaldi, menos Pavarotti.`);
                 return;
             }
 
             if (!message.member.voiceChannel) {
-                message.channel.send(message.author.toString() + " Tienes que estar en el canal para usar el comando !Play.");
+                message.channel.send(message.author.toString() + " Tienes que estar en el canal para usar el comando `!play`");
                 return;
             }
 
@@ -58,14 +58,19 @@ client.on("message", (message) => {
                     }
                 }
                 getSongInfo(args[1]).then(value => {
+                    let songRequest = {
+                        userName: message.author.username,
+                        userAvatar: message.author.avatarURL,
+                        songTitle: value.info.title,
+                        songUrl: args[1],
+                        songLength: value.info.duration
+                    }
                     let listSongs = songs[message.guild.id];
-                    listSongs.queue.push(args[1]);
-                    insertPlaylist(message.author.id, message.author.username
-                        , message.guild.id, message.author.avatarURL, value.info.id, value.info.url, value.info.title)
+                    listSongs.queue.push(songRequest);
                     message.channel.send(message.author.toString() + ", La canción `" + value.info.title + "` fue agregada a la playlist.")
                     if (!message.guild.voiceConnection) {
                         message.member.voiceChannel.join().then((connection) => {
-                            playList(connection, message, args[1]);
+                            playList(connection, message);
                         });
                     }
                 });
@@ -79,18 +84,49 @@ client.on("message", (message) => {
             }
             break;
         case "skip":
+            if (!message.member.voiceChannel) {
+                message.channel.send(message.author.toString() + " Tienes que estar en el canal para usar el comando `!skip`");
+                return;
+            }
             let listSongs = songs[message.guild.id];
             if (listSongs.dispatcher) {
                 listSongs.dispatcher.end();
             }
             break;
         case "stop":
+            if (!message.member.voiceChannel) {
+                message.channel.send(message.author.toString() + " Tienes que estar en el canal para usar el comando `!stop`");
+                return;
+            }
             if (message.guild.voiceConnection) {
+                let stopPlaylist = songs[message.guild.id];
+                stopPlaylist.queue.length = 0;
                 message.guild.voiceConnection.disconnect();
             }
             break;
         case "playlist":
-
+            if (songs[message.guild.id]) {
+                let listSong = songs[message.guild.id]
+                let songRequest = listSong.queue
+                if (songRequest.length > 0) {
+                    let playlistArray = []
+                    let index = 0;
+                    for (const song of songRequest) {
+                        index = index + 1;
+                        fields = {
+                            name: `${index}. Pedida por ${song.userName}`,
+                            value: `[${song.songTitle}](${song.songUrl})`
+                        }
+                        playlistArray.push(fields);
+                    }
+                    embed = createEmbedMessage("Playlist", playlistArray, undefined, undefined);
+                    message.channel.send(embed);
+                } else {
+                    message.channel.send(`${message.author.toString()} no hay canciones en espera`);
+                }
+            } else {
+                message.channel.send(`${message.author.toString()} la playlist está vacía`);
+            }
             break;
         case "coins":
             getCoins(message.author.id, message.guild.id).then(value => {
@@ -105,7 +141,7 @@ client.on("message", (message) => {
                 embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
                 message.channel.send(embed);
             }).catch(err => {
-                message.channel.send(message.author.toString() + " ocurrió un error al obtener tus coins");
+                message.channel.send(`${message.author.toString()} ocurrió un error al obtener tus coins`);
                 console.log(err.error);
             });
             break;
@@ -124,17 +160,36 @@ client.on("message", (message) => {
         case "ayuda":
             fields = createHelp();
             embed = createEmbedMessage(undefined, fields, undefined, undefined);
-            message.channel.send(message.author.toString() + " **Inbox perrito !** :incoming_envelope:")
+            message.channel.send(`${message.author.toString()} **Inbox perrito !** :incoming_envelope:`)
             message.author.send(embed);
             break;
         default:
-            message.channel.send(message.author.toString() + " no existe ese comando")
+            message.channel.send(`${message.author.toString()} no existe ese comando`)
     }
 });
 
 var playList = async (connection, message) => {
     let playlist = songs[message.guild.id];
-    playlist.dispatcher = connection.playOpusStream(await dtdl(playlist.queue[0]));
+    let requestSong = playlist.queue[0];
+    let thumbnail = getThumbnail(requestSong.songUrl);
+    playlist.dispatcher = connection.playOpusStream(await dtdl(requestSong.songUrl));
+    if (playlist.queue.length > 0) {
+        let fields = [{
+            name: "Titulo de la canción",
+            value: `[${requestSong.songTitle}](${requestSong.songUrl})`
+
+        },
+        {
+            name: "Duración",
+            value: secondsToMinute(parseInt(requestSong.songLength))
+        }]
+        let footer = {
+            text: `Canción pedida por ${requestSong.userName}`,
+            icon: requestSong.userAvatar
+        }
+        let embed = createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer);
+        message.channel.send(embed);
+    }
     playlist.queue.shift();
     playlist.dispatcher.on("end", () => {
         if (playlist.queue[0]) {
