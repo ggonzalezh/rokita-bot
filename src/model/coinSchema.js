@@ -4,7 +4,8 @@ const schema = mongoose.Schema({
     userID : String,
     serverID : String,
     userName: String,
-    coins: Number
+    coins: Number,
+    date: String
 });
 
 var coinSchema = mongoose.model("coin", schema);
