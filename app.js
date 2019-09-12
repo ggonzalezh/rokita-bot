@@ -4,7 +4,7 @@ const { insertCoins, getCoins } = require('./src/service/database/coins');
 const { experienceSystem } = require('./src/service/database/experience');
 const { createEmbedMessage, createHelp } = require('./src/helper/discord');
 const { validateUrl, getSongInfo, getThumbnail } = require('./src/service/music/helper/utils');
-const { secondsToMinute } = require('./src/helper/utils');
+const { secondsToMinute, mereceCoins } = require('./src/helper/utils');
 const dtdl = require('ytdl-core-discord');
 const config = require('./config.json')
 const array = require("./src/helper/arrays");
@@ -23,6 +23,17 @@ client.on("ready", () => {
 
 client.on("guildMemberAdd", (member) => {
     member.guild.channels.find("name", "general").send(member.toString() + " Bienvenido, " + array.bienvenido[Math.floor(Math.random() * array.bienvenido.length)]);
+    getCoins(member.id, member.guild.id).then(value => {
+        if (undefined == value.user.date) {
+            insertCoins(member.id, member.guild.id, member.displayName).then().catch(err => {
+                member.guild.channels.find("name", "general").send(`Ocurrió un error en el regalo de monedas a ${member.toString}`);
+                console.log(err);
+            });
+        }
+    }).catch(err => {
+        message.channel.send(`${member.toString()} ocurrió un error al obtener tus coins`);
+        console.log(err.error);
+    });
 });
 
 
@@ -32,7 +43,6 @@ client.on("message", (message) => {
     if (message.author.equals(client.user)) {
         return;
     }
-    insertCoins(message.author.id, message.guild.id, message.author.username);
     experienceSystem(message.author.id, message.guild.id, message.author.username);
     if (!message.content.startsWith(prefix)) {
         return;
@@ -145,18 +155,29 @@ client.on("message", (message) => {
                 console.log(err.error);
             });
             break;
-        /*        case "cuenta":
-                    let createdDate = formatDate(message.author.createdAt);
-                    break;
-                case "profecia":
-                    break;
-                case "piel":
-                    message.channel.send(message.author.toString() + " Tu color de piel es " + array.color[Math.floor(Math.random() * array.color.length)]);
-                    break;
-                case "tmr":
-                    break;
-                case "10dif":
-                    break;*/
+        case "daily":
+            getCoins(message.author.id, message.guild.id).then(value => {
+                if (undefined == value.user.date) {
+                    insertCoins(message.author.id, message.guild.id, message.author.username).then(value => {
+                        message.channel.send(`${message.author.toString()} se han añadido $1000 a tu cuenta. Total: $${value.user.coins}`);
+                    }).catch(err => console.log(err));
+                } else {
+                    if (!value.user.newUser) {
+                        if (mereceCoins(value)) {
+                            insertCoins(message.author.id, message.guild.id, message.author.username).then(value => {
+                                if (!value.user.newUser) {
+                                    message.channel.send(`${message.author.toString()} se han añadido $1000 a tu cuenta. Total: $${value.user.coins}`);
+                                }
+                            }).catch(err => {
+                                console.log(err);
+                            });
+                        } else {
+                            message.channel.send(`${message.author.toString()} ya canjeaste tus monedas diarias, inténtalo mañana.`)
+                        }
+                    }
+                }
+            })
+            break;
         case "ayuda":
             fields = createHelp();
             embed = createEmbedMessage(undefined, fields, undefined, undefined);
