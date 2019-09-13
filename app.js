@@ -1,8 +1,8 @@
 const { Client } = require("discord.js");
 const { connectMongoDb } = require('./src/service/database/connect');
-const { insertCoins, getCoins } = require('./src/service/database/coins');
+const { insertCoins, getCoins, winCoins, loseCoins } = require('./src/service/database/coins');
 const { experienceSystem } = require('./src/service/database/experience');
-const { createEmbedMessage, createHelp } = require('./src/helper/discord');
+const { createEmbedMessage, createHelp, fillArrayWithIcons } = require('./src/helper/discord');
 const { validateUrl, getSongInfo, getThumbnail } = require('./src/service/music/helper/utils');
 const { secondsToMinute, mereceCoins } = require('./src/helper/utils');
 const dtdl = require('ytdl-core-discord');
@@ -140,16 +140,20 @@ client.on("message", (message) => {
             break;
         case "coins":
             getCoins(message.author.id, message.guild.id).then(value => {
-                fields = [{
-                    name: "Propietario de la cuenta",
-                    value: message.author.username
-                },
-                {
-                    name: "Coins",
-                    value: value.user.coins
-                }]
-                embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
-                message.channel.send(embed);
+                if (value.user.coins !== undefined) {
+                    fields = [{
+                        name: "Propietario de la cuenta",
+                        value: message.author.username
+                    },
+                    {
+                        name: "Coins",
+                        value: value.user.coins
+                    }]
+                    embed = createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png");
+                    message.channel.send(embed);
+                }else{
+                    message.channel.send(`${message.author.toString()} no tienes coins. Usa el comando` + " `!daily`");
+                }
             }).catch(err => {
                 message.channel.send(`${message.author.toString()} ocurrió un error al obtener tus coins`);
                 console.log(err.error);
@@ -168,15 +172,49 @@ client.on("message", (message) => {
                                 if (!value.user.newUser) {
                                     message.channel.send(`${message.author.toString()} se han añadido $1000 a tu cuenta. Total: $${value.user.coins}`);
                                 }
-                            }).catch(err => {
-                                console.log(err);
-                            });
+                            }).catch(err => { console.log(err); });
                         } else {
                             message.channel.send(`${message.author.toString()} ya canjeaste tus monedas diarias, inténtalo mañana.`)
                         }
                     }
                 }
             })
+            break;
+        case "bet":
+            if (!args[1]) {
+                message.channel.send(`${message.author.toString()} falta el monto que quieres apostar`);
+                return;
+            }
+            if (args[1] < 10) {
+                message.channel.send(`${message.author.toString()} el monto mínimo de la apuesta es de $10`);
+                return;
+            }
+            getCoins(message.author.id, message.guild.id).then(value => {
+                if (value.user.coins !== undefined) {
+                    if (value.user.coins >= args[1]) {
+                        var icons = fillArrayWithIcons(array.iconos);
+                        message.channel.send(`${icons[0].icon} ${icons[1].icon} ${icons[2].icon}`);
+                        var isArrayEquals = icons.every((val, i, arr) => val === arr[0]);
+                        if (isArrayEquals) {
+                            let coinsWins = (value.user.coins - args[1]) + (args[1] * 2);
+                            winCoins(message.author.id, message.guild.id, coinsWins).then(value => {
+                                message.channel.send(`Felicitaciones ${message.author.toString()}, has ganado ${(args[1] * 2)} coins.Tu balance actual es de: $${value.user.coins}.`);
+                            }).catch(err => {
+                                console.log(err);
+                            })
+                        } else {
+                            let coinsLoses = value.user.coins - args[1];
+                            loseCoins(message.author.id, message.guild.id, coinsLoses).then().catch(err => console.log(err));
+                        }
+                    } else {
+                        message.channel.send(`${message.author.toString()} no tienes las coins suficientes para apostar $${args[1]}.`);
+                    }
+                } else {
+                    message.channel.send(`${message.author.toString()} no tienes coins. Usa el comando` + " `!daily`");
+                }
+            }).catch(err => {
+
+            });
             break;
         case "ayuda":
             fields = createHelp();

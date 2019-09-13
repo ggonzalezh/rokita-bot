@@ -30,20 +30,26 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
 exports.createHelp = () => {
     let help = [{
         name: "Musica",
-        value: "`!Play` `!Skip` `!Stop`"
+        value: "`!play` `!playlist` `!skip` `!stop`"
     },
     {
         name: "Banco del Distrito Federal de Puno",
-        value: "`!Chibolocoins`"
+        value: "`!coins`"
     },
     {
-        name: "C L O W N S",
-        value: "`!Peruano` `!Empresario` `!Elchileno` `!Tmr` `!Piel` `!Gachi`"
-    },
-    {
-        name: "Misceláneo",
-        value: "`!Cuenta` `!Profecia` `!10dif`"
+        name: "Casino de Juliaca",
+        value: "`!bet`"
     }]
 
     return help;
+}
+
+exports.fillArrayWithIcons = (icons) => {
+    let array = [];
+    for (let index = 0; index < 3; index++) {
+        array.push(icons[Math.floor(Math.random() * icons.length)])
+    }
+
+    let iconsEquals = array.every((val, i, arr) => val === arr[0]);
+    return array;
 }
