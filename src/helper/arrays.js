@@ -67,7 +67,23 @@ var LePusiste = [
     "TE PUSISTE BRAVO CACHUPIN,"
 ]
 
+var iconos = [
+    {
+        icon: ":gorilla:",
+        value: 1000
+    },
+    {
+        icon: ":japanese_goblin:",
+        value: 800
+    },
+    {
+        icon: ":rhino:",
+        value: 500
+    }
+]
+
 module.exports.lePusiste = LePusiste;
 module.exports.dota = dota;
 module.exports.color = color;
 module.exports.bienvenido = bienvenido;
+module.exports.iconos = iconos;

@@ -9,6 +9,14 @@ exports.getCoins = async (userId, serverId) => {
     return await getCoinService(userId, serverId);
 }
 
+exports.winCoins = async (userId, serverId, coinsAdded) => {
+    return await winCoinsService(userId, serverId, coinsAdded);
+}
+
+exports.loseCoins = async (userId, serverId, coinsLoses) => {
+    return await loseCoinsService(userId, serverId, coinsLoses);
+}
+
 var getCoinService = (userId, serverId) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
@@ -87,5 +95,55 @@ var insertCoinService = (userId, serverId, userName) => {
                 }
             }
         });
+    });
+}
+
+var winCoinsService = (userId, serverId, coinsAdded) => {
+    return new Promise((resolve, reject) => {
+        coin.findOne({
+            userID: userId,
+            serverID: serverId
+        }, (err, res) => {
+            if (err) {
+                reject({
+                    error: {
+                        err
+                    }
+                })
+            } else {
+                res.coins = coinsAdded;
+                res.save().catch(err => console.log(err));
+                resolve({
+                    user:{
+                        coins: res.coins
+                    }
+                });
+            }
+        })
+    });
+}
+
+var loseCoinsService = (userId, serverId, coinsLoses) => {
+    return new Promise((resolve, reject) => {
+        coin.findOne({
+            userID: userId,
+            serverID: serverId
+        }, (err, res) => {
+            if (err) {
+                reject({
+                    error: {
+                        err
+                    }
+                })
+            } else {
+                res.coins = coinsLoses;
+                res.save().catch(err => console.log(err));
+                resolve({
+                    user:{
+                        coins: res.coins
+                    }
+                });
+            }
+        })
     });
 }
