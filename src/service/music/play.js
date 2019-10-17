@@ -1,5 +1,5 @@
 const dtdl = require('ytdl-core-discord');
-var songs = {};
+let songs = {};
 
 exports.playSong = (message, uri = undefined, action) => {
     if( action == "add"){
@@ -9,10 +9,10 @@ exports.playSong = (message, uri = undefined, action) => {
     if ( action == "skip"){
         skipSong(message);
     }
-}
+};
 
 
-var play = async (connection, message) => {
+let play = async (connection, message) => {
     let playlist = songs[message.guild.id];
     playlist.dispatcher = connection.playOpusStream(await dtdl(playlist.queue[0]));
     playlist.queue.shift();

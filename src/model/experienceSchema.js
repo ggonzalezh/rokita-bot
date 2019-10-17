@@ -9,6 +9,6 @@ const schema = mongoose.Schema({
     rango: String
 });
 
-var experienceSchema = mongoose.model("experiencias", schema);
+let experienceSchema = mongoose.model("experiencias", schema);
 
 exports.experience = experienceSchema;

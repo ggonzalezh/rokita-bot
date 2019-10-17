@@ -5,6 +5,6 @@ const schema = mongoose.Schema({
     rangoNombre : String
 });
 
-var rangoSchema = mongoose.model("rangos", schema);
+let rangoSchema = mongoose.model("rangos", schema);
 
 exports.rangos = rangoSchema;

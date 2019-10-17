@@ -8,6 +8,6 @@ const schema = mongoose.Schema({
     date: String
 });
 
-var coinSchema = mongoose.model("coin", schema);
+let coinSchema = mongoose.model("coin", schema);
 
 exports.coin = coinSchema;
