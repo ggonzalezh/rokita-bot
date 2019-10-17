@@ -1,6 +1,7 @@
 const ytdl = require("ytdl-core");
 const youtubeThumbnail = require('youtube-thumbnail');
 const youtubePlaylist = require("youtube-playlist");
+const youtubeSearch = require("yt-search");
 
 exports.getSongInfo = async (uri) => {
     return await ytdlInfo(uri);
@@ -14,13 +15,10 @@ exports.getThumbnail = (uri) => {
     return getThumbnailService(uri);
 };
 
-exports.getYoutubePlaylist = (uri) => {
-    youtubePlaylist(uri, 'url').then(value => {
-        return value
-    }).catch(err => {
-
-    });
+exports.youtubeSearch = async (songName) => {
+    return await getSongFromYoutube(songName);
 }
+
 
 let ytdlInfo = (uri) => {
     return new Promise((resolve, reject) => {
@@ -51,12 +49,22 @@ let getThumbnailService = (uri) => {
     return image.high.url;
 };
 
-let getPlaylistYoutube = (uri) => {
+let getSongFromYoutube = (songName) => {
     return new Promise((resolve, reject) => {
-        youtubePlaylist(uri, 'url').then(value => {
-            resolve({
-                value
-            })
-        });
-    });
-};
+        youtubeSearch(songName, (err, res) => {
+            if(err){
+                reject({
+                    error:{
+                        err
+                    }
+                })
+            }else{
+                resolve({
+                    song:{
+                        songName:res.videos[0]
+                    }
+                })
+            }
+        })
+    })
+}

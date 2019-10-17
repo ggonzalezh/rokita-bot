@@ -3,7 +3,7 @@ const { connectMongoDb } = require('./src/service/database/connect');
 const { insertCoins, getCoins, winCoins, loseCoins, findAllCoins } = require('./src/service/database/coins');
 const { experienceSystem } = require('./src/service/database/experience');
 const { createEmbedMessage, createHelp, fillArrayWithIcons } = require('./src/helper/discord');
-const { validateUrl, getSongInfo, getThumbnail } = require('./src/service/music/helper/youtube');
+const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./src/service/music/helper/youtube');
 const { secondsToMinute, mereceCoins } = require('./src/helper/utils');
 const dtdl = require('ytdl-core-discord');
 const config = require('./config.json');
@@ -14,10 +14,10 @@ const prefix = config.discord.prefix;
 const client = new Client();
 let songs = {};
 
-client.login(process.env.BOT_TOKEN).then(response => { });
+client.login("NTczOTY4MTIwMDM3OTAwNDI2.XXSlfg.ZeC8VwAPX8bEA8un0sLsX17RJ-M"/*process.env.BOT_TOKEN*/).then(response => { });
 
 client.on("ready", () => {
-    connectMongoDb(process.env.MONGOLAB_URI);
+    connectMongoDb("mongodb://misser:momito3914@ds217351.mlab.com:17351/rokitabot"/*process.env.MONGOLAB_URI*/);
     console.log("RokitaBOT ON!");
     client.user.setActivity("!Ayuda");
 });
@@ -57,10 +57,10 @@ client.on("message", (message) => {
                     return;
                 }
 
-                if (!message.member.voiceChannel) {
+                /*if (!message.member.voiceChannel) {
                     message.channel.send(message.author.toString() + " Tienes que estar en el canal para usar el comando `!play`");
                     return;
-                }
+                }*/
                 if (!songs[message.guild.id]) {
                     songs[message.guild.id] = {
                         queue: []
@@ -121,7 +121,30 @@ client.on("message", (message) => {
                         default:
                     }
                 } else {
-                    message.channel.send(`${message.author.toString()}, esta en construcción la busqueda de canciones`);
+                    let searchSong = "";
+                    for (let index = 1; index < args.length; index++) {
+                        let songArgs = args[index];
+                        searchSong = searchSong + " " + songArgs;
+                    }
+                    youtubeSearch(searchSong.trim()).then(value => {
+                        let listSongs = songs[message.guild.id];
+                        let url = "www.youtube.com" + value.song.songName.url;
+                        let songRequest = {
+                            userName: message.author.username,
+                            userAvatar: message.author.avatarURL,
+                            songUrl: url
+                        };
+                        listSongs.queue.push(songRequest);
+                        message.channel.send(message.author.toString() + ", La canción `" + value.song.songName.title + "` fue agregada a la playlist.")
+                        if (!message.guild.voiceConnection) {
+                            message.member.voiceChannel.join().then((connection) => {
+                                playList(connection, message);
+                            });
+                        }
+                    }).catch(err => {
+                        message.channel.send(`${message.author.toString()}, Ocurrió un error buscando la cancion. Intenta nuevamente.`)
+                        console.log(err);
+                    });
                 }
                 break;
             case "skip":
@@ -146,12 +169,16 @@ client.on("message", (message) => {
                 }
                 break;
             case "shuffle":
-                let shuffleSongs = songs[message.guild.id];
-                if(undefined != shuffleSongs){
-                    shuffle(shuffleSongs.queue);
-                    message.channel.send(`${message.author.toString()}, Playlist re-ordenada`);
-                }else{
-                    return;
+                if (songs[message.guild.id]) {
+                    let shuffleSongs = songs[message.guild.id];
+                    if (undefined != shuffleSongs) {
+                        shuffle(shuffleSongs.queue);
+                        message.channel.send(`${message.author.toString()}, Playlist re-ordenada`);
+                    } else {
+                        return;
+                    }
+                } else {
+                    message.channel.send(`${message.author.toString()} la playlist está vacía`);
                 }
                 break;
             case "playlist":
@@ -162,22 +189,32 @@ client.on("message", (message) => {
                         let playlistArray = [];
                         let index = 0;
                         for (const song of songRequest) {
-                            index = index + 1;
-                            fields = {
-                                name: `${index}. Pedida por ${song.userName}`,
-                                value: `[${song.songTitle}](${song.songUrl})`
-                            };
-                            playlistArray.push(fields);
+                            if (index <= 10) {
+                                getSongInfo(song.songUrl).then(value => {
+                                    index = index + 1;
+                                    let fields = {
+                                        name: `${index}. Pedida por ${song.userName}`,
+                                        value: `[${value.info.title}](${value.info.url})`
+                                    };
+                                    playlistArray.push(fields);
+                                    if (index == 10) {
+                                        embed = createEmbedMessage("Playlist", playlistArray, undefined, undefined);
+                                        message.channel.send(embed);
+                                    }
+                                }).catch(err => {
+                                    console.log("Ocurrio un error: " + err);
+                                });
+                            } else {
+                                break;
+                            }
                         }
-                        embed = createEmbedMessage("Playlist", playlistArray, undefined, undefined);
-                        message.channel.send(embed);
                     } else {
                         message.channel.send(`${message.author.toString()} no hay canciones en espera`);
                     }
                 } else {
                     message.channel.send(`${message.author.toString()} la playlist está vacía`);
                 }*/
-                message.channel.send(`${message.author.toString()}, Comando en reconstrucción`)
+                message.channel.send(`${message.author.toString()}, comando en construcción`);
                 break;
             case "coins":
                 getCoins(message.author.id, message.guild.id).then(value => {
@@ -272,7 +309,7 @@ client.on("message", (message) => {
                 message.channel.send(`${message.author.toString()} no existe ese comando`);
         }
     } catch (err) {
-        message.channel.send(`${message.author.toString()}, Ocurrió un error`);
+        message.channel.send(`${message.author.toString()}, Ocurrió un error, intento`);
         console.log(err);
     }
 });
