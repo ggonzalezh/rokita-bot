@@ -1,5 +1,5 @@
 //Array TMR
-var dota = [
+let dota = [
     "**Steven no come rocoto**",
     "**Misser es entero burro csmr**",
     "**Bara no mete orion**",
@@ -38,7 +38,7 @@ var dota = [
 ];
 
 //Array color piel
-var color = [
+let color = [
     "**Negra**, como el de los neumaticos :new_moon_with_face: ",
     "**Blanca**, color leche, tirando para plateado, pareces nordico :full_moon_with_face: ",
     "**Marron**, color caca, tirando para cobrizo, pareces mojon :poop: ",
@@ -47,7 +47,7 @@ var color = [
 ];
 
 //Array de bienvenida
-var bienvenido = [
+let bienvenido = [
     "serrano color chaufa!",
     "serrano color soya!",
     "serrano color galaxia!",
@@ -55,7 +55,7 @@ var bienvenido = [
     "burro of mrd!"
 ];
 
-var LePusiste = [
+let LePusiste = [
     "Le pusiste weno con esta cancion,",
     "ANDATEEEEE PESAOOOOOOOOOOOOO,",
     "ME VUELVO LOCOOOOOOO CON ESTA,",
@@ -67,7 +67,7 @@ var LePusiste = [
     "TE PUSISTE BRAVO CACHUPIN,"
 ]
 
-var iconos = [
+let iconos = [
     {
         icon: ":gorilla:",
         value: 1000
