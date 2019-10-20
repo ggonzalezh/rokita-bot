@@ -47,3 +47,9 @@ exports.mereceCoins = (value) => {
 
     return isNewDay;
 }
+
+exports.sendErrorConsole = (error) => {
+    console.log("----------ERROR----------");
+    console.log(error);
+    console.log("----------FIN----------")
+}
