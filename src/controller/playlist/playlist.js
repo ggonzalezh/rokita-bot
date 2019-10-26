@@ -193,8 +193,7 @@ let playList = async (connection, message) => {
                     text: `Canción pedida por ${requestSong.userName}`,
                     icon: requestSong.userAvatar
                 };
-                let embed = createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer);
-                message.channel.send(embed);
+                sendMessage(createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer), message);
             }).catch(err => {
                 sendMessage("ocurrió un error obteniendo la información de la canción", message);
                 sendErrorConsole(err);
@@ -214,3 +213,7 @@ let playList = async (connection, message) => {
         sendErrorConsole(err);
     }
 };
+
+let shuffle = (array) => {
+    array.sort(() => Math.random() - 0.5);
+}

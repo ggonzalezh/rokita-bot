@@ -26,7 +26,7 @@ exports.secondsToMinute = (seconds) => {
     return minutes;
 }
 
-exports.mereceCoins = (value) => {
+exports.isNewDay = (value) => {
     var isNewDay;
     var dateNow = moment(new Date()).format('DD/MM/YYYY')
     var arrayDateNow = dateNow.split('/')

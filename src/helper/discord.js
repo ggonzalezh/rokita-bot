@@ -56,6 +56,6 @@ exports.fillArrayWithIcons = (icons) => {
     return array;
 }
 
-exports.sendEmbedMessage = (embed) => {
+exports.sendEmbedMessage = (embed, message) => {
     message.channel.send(embed);
 }
