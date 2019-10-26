@@ -1,13 +1,13 @@
 const { Client } = require("discord.js");
-const { logginCredentials } = require("./controller/discord/ready")
-const { sayHello, sendMessageToChannel } = require("./controller/discord/memberAdd");
-const { getCoins, dailyCoins, betCoins } = require('./controller/coin/coins');
-const { betValidation } = require('../src/controller/coin/helper/validation');
-const { experienceSystem } = require('./service/database/experienceService');
-const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./helper/discord');
-const { playSong, skipSong, stopPlaylist, shufflePlaylist } = require('./controller/playlist/playlist');
-const { validationPlay, userInChannel } = require('./controller/playlist/helper/validation');
-const { sendErrorConsole } = require('../src/helper/utils');
+const { logginCredentials } = require("./src/controller/discord/ready")
+const { sayHello, sendMessageToChannel } = require("./src/controller/discord/memberAdd");
+const { getCoins, dailyCoins, betCoins } = require('./src/controller/coin/coins');
+const { betValidation } = require('./src/controller/coin/helper/validation');
+const { experienceSystem } = require('./src/service/database/experienceService');
+const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./src/helper/discord');
+const { playSong, skipSong, stopPlaylist, shufflePlaylist } = require('./src/controller/playlist/playlist');
+const { validationPlay, userInChannel } = require('./src/controller/playlist/helper/validation');
+const { sendErrorConsole } = require('./src/helper/utils');
 const config = require('../config.json');
 
 const prefix = config.discord.prefix;
