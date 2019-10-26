@@ -11,9 +11,9 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "hh-mm-ss": "^1.2.0",
-    "moment": "^2.22.2",
-    "mongoose": "^5.3.12",
-    "nodemon": "^1.19.2",
+    "moment": "^2.24.0",
+    "mongoose": "^5.7.7",
+    "nodemon": "^1.19.4",
     "opusscript": "0.0.6",
     "spotify-web-api-node": "^4.0.0",
     "youtube-playlist": "^1.0.2",

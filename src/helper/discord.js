@@ -1,5 +1,4 @@
 const { RichEmbed } = require('discord.js');
-const config = require('../../config.json')
 
 exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail = undefined, footer = undefined) => {
     let embed = new RichEmbed();
@@ -26,11 +25,14 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
     return embed;
 }
 
+exports.sendMessage = (text, message) => {
+    message.channel.send(`${message.author.toString()} ` + text);
+}
 
 exports.createHelp = () => {
     let help = [{
         name: "Musica",
-        value: "`!play` `!playlist` `!skip` `!stop`"
+        value: "`!play` `!skip` `!stop` `!playlist` `!shuffle`"
     },
     {
         name: "Banco del Distrito Federal de Puno",
@@ -52,4 +54,8 @@ exports.fillArrayWithIcons = (icons) => {
 
     let iconsEquals = array.every((val, i, arr) => val === arr[0]);
     return array;
+}
+
+exports.sendEmbedMessage = (embed, message) => {
+    message.channel.send(embed);
 }

@@ -1,8 +1,8 @@
 const { coin } = require('../../model/coinSchema');
 const { formatDate } = require('../../helper/utils');
 
-exports.insertCoins = async (userId, serverId, username) => {
-    return await insertCoinService(userId, serverId, username);
+exports.insertCoins = async (userId, serverId, userName) => {
+    return await insertCoinService(userId, serverId, userName);
 };
 
 exports.getCoins = async (userId, serverId) => {
@@ -21,7 +21,7 @@ exports.findAllCoins = async (serverId) => {
     return await findAllCoinsService(serverId);
 }
 
-var getCoinService = (userId, serverId) => {
+let getCoinService = (userId, serverId) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
             userID: userId,
@@ -54,7 +54,7 @@ var getCoinService = (userId, serverId) => {
     });
 }
 
-var insertCoinService = (userId, serverId, userName) => {
+let insertCoinService = (userId, serverId, userName) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
             userID: userId,
@@ -102,7 +102,7 @@ var insertCoinService = (userId, serverId, userName) => {
     });
 }
 
-var winCoinsService = (userId, serverId, coinsAdded) => {
+let winCoinsService = (userId, serverId, coinsAdded) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
             userID: userId,
@@ -127,7 +127,7 @@ var winCoinsService = (userId, serverId, coinsAdded) => {
     });
 }
 
-var loseCoinsService = (userId, serverId, coinsLoses) => {
+let loseCoinsService = (userId, serverId, coinsLoses) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
             userID: userId,
@@ -152,7 +152,7 @@ var loseCoinsService = (userId, serverId, coinsLoses) => {
     });
 }
 
-var findAllCoinsService = (serverId) => {
+let findAllCoinsService = (serverId) => {
     return new Promise((resolve, reject) => {
         coin.find({
             serverID: serverId

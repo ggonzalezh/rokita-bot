@@ -1,5 +1,5 @@
 const {experience} = require('../../model/experienceSchema');
-const {getRango} = require('../database/rangos');
+const {getRango} = require('./rangosService');
 
 exports.experienceSystem = (user, server, username) => {
     experience.findOne({
