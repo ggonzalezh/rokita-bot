@@ -8,7 +8,7 @@ const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = requir
 const { playSong, skipSong, stopPlaylist, shufflePlaylist } = require('./src/controller/playlist/playlist');
 const { validationPlay, userInChannel } = require('./src/controller/playlist/helper/validation');
 const { sendErrorConsole } = require('./src/helper/utils');
-const config = require('../config.json');
+const config = require('config.json');
 
 const prefix = config.discord.prefix;
 const client = new Client();
