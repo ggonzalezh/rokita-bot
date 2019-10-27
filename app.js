@@ -1,9 +1,8 @@
 const { Client } = require("discord.js");
 const { logginCredentials } = require("./src/controller/discord/ready")
 const { sayHello, sendMessageToChannel } = require("./src/controller/discord/memberAdd");
-const { getCoins, dailyCoins, betCoins } = require('./src/controller/coin/coins');
+const { getCoins, betCoins, dailyCoins} = require('./src/controller/coin/coins');
 const { betValidation } = require('./src/controller/coin/helper/validation');
-const { experienceSystem } = require('./src/service/database/experienceService');
 const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./src/helper/discord');
 const { playSong, skipSong, stopPlaylist, shufflePlaylist } = require('./src/controller/playlist/playlist');
 const { validationPlay, userInChannel } = require('./src/controller/playlist/helper/validation');
@@ -36,13 +35,11 @@ client.on("guildMemberAdd", (member) => {
 
 
 client.on("message", (message) => {
-    let embed;
     let fields;
     try {
         if (message.author.equals(client.user)) {
             return;
         }
-        experienceSystem(message.author.id, message.guild.id, message.author.username);
         if (!message.content.startsWith(prefix)) {
             return;
         }
