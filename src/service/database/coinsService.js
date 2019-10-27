@@ -25,7 +25,7 @@ let getCoinService = (userId, serverId) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
             userID: userId,
-            serverID: serverId,
+            serverID: serverId
         }, (err, res) => {
             if (err) {
                 reject({
