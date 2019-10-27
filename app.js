@@ -84,7 +84,6 @@ client.on("message", (message) => {
                 break;
             case "ayuda":
                 fields = createHelp();
-                sendMessage("**Inbox perrito !** :incoming_envelope:", message);
                 sendEmbedMessage(createEmbedMessage(undefined, fields, undefined, undefined), message);
                 break;
             default:
