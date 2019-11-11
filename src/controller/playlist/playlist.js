@@ -1,6 +1,6 @@
 const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./helper/youtube');
 const { secondsToMinute, sendErrorConsole } = require('../../helper/utils');
-const { sendMessage } = require('../../helper/discord');
+const { sendMessage, sendEmbedMessage } = require('../../helper/discord');
 const { createEmbedMessage } = require('../../helper/discord');
 const youtubePlaylist = require("youtube-playlist");
 const dtdl = require('ytdl-core-discord');
@@ -136,7 +136,7 @@ let addYoutubePlaylist = (message, url) => {
                 };
                 listSongs.queue.push(songRequest);
             }
-            sendMessage("se agregaron `" + listSongs.queue.length + "` canciones a la playlist.")
+            sendMessage("se agregaron `" + listSongs.queue.length + "` canciones a la playlist.", message);
             if (!message.guild.voiceConnection) {
                 message.member.voiceChannel.join().then((connection) => {
                     playList(connection, message);
@@ -193,7 +193,7 @@ let playList = async (connection, message) => {
                     text: `Canción pedida por ${requestSong.userName}`,
                     icon: requestSong.userAvatar
                 };
-                sendMessage(createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer), message);
+                sendEmbedMessage(createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer), message);
             }).catch(err => {
                 sendMessage("ocurrió un error obteniendo la información de la canción", message);
                 sendErrorConsole(err);

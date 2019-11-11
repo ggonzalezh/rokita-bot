@@ -11,5 +11,5 @@ let connectToMongo = () => {
 }
 
 let setActivityBot = (client) => {
-    client.user.setActivity("!ayuda");
+    client.user.setActivity("-ayuda");
 }
