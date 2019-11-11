@@ -7,9 +7,9 @@ exports.logginCredentials = (client) => {
 }
 
 let connectToMongo = () => {
-    connectMongoDb(process.env.MONGOLAB_URI);
+    connectMongoDb("mongodb+srv://rokitabot:rokitabotqlo123@cluster-1-mpvuc.mongodb.net/rokitabot?retryWrites=true&w=majority");
 }
 
 let setActivityBot = (client) => {
-    client.user.setActivity("!ayuda");
+    client.user.setActivity("-ayuda");
 }
