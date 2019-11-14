@@ -12,7 +12,7 @@
     "discord.js": "^11.5.1",
     "hh-mm-ss": "^1.2.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.9",
+    "mongoose": "^5.7.11",
     "nodemon": "^1.19.4",
     "opusscript": "0.0.6",
     "spotify-web-api-node": "^4.0.0",

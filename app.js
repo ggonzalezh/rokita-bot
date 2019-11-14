@@ -4,7 +4,7 @@ const { sayHello, sendMessageToChannel } = require("./src/controller/discord/mem
 const { getCoins, betCoins, dailyCoins} = require('./src/controller/coin/coins');
 const { betValidation } = require('./src/controller/coin/helper/validation');
 const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./src/helper/discord');
-const { playSong, skipSong, stopPlaylist, shufflePlaylist } = require('./src/controller/playlist/playlist');
+const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/controller/playlist/playlist');
 const { validationPlay, userInChannel } = require('./src/controller/playlist/helper/validation');
 const { sendErrorConsole } = require('./src/helper/utils');
 const config = require('./config.json');
@@ -66,7 +66,7 @@ client.on("message", (message) => {
                 }
                 break;
             case "playlist":
-                sendMessage("comando en construcción", message);
+                getPlaylist(message);
                 break;
             case "coins":
                 getCoins(message);
@@ -84,7 +84,8 @@ client.on("message", (message) => {
                 break;
             case "ayuda":
                 fields = createHelp();
-                sendEmbedMessage(createEmbedMessage(undefined, fields, undefined, undefined), message);
+                sendMessage('**Inbox perrito !** :incoming_envelope:', message);
+                message.author.send(createEmbedMessage(undefined, fields, undefined, undefined));
                 break;
             default:
                 sendMessage('no existe ese comando', message);

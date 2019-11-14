@@ -72,6 +72,42 @@ exports.shufflePlaylist = (message) => {
     }
 };
 
+exports.getPlaylist = (message) => {
+    try {
+        if (songs[message.guild.id]) {
+            let listSong = songs[message.guild.id]
+            let songRequest = listSong.queue
+            if (songRequest.length > 0) {
+                let playlistArray = []
+                let index = 0;
+                for (const song of songRequest) {
+                    index = index + 1;
+                    fields = {
+                        name: `${index}- Pedida por ${song.userName}`,
+                        value: `[${song.songTitle}](${song.songUrl})`
+                    }
+                    playlistArray.push(fields);
+                    if(index >= 5){
+                        break;
+                    }
+                }
+                let footer = {
+                    text: "Siguientes 5 canciones "
+                }
+                embed = createEmbedMessage("Playlist", playlistArray, undefined, footer);
+                sendEmbedMessage(embed, message);
+            } else {
+                sendMessage("no hay canciones en espera", message);   
+            }
+        }else{
+            sendMessage('no hay canciones en espera', message);
+        }
+    } catch (err) {
+        sendMessage('ocurrió un error obteniendo la playlist', message);
+        sendErrorConsole(err);
+    }
+}
+
 let addToPlaylist = (message, url) => {
     try {
         let platform = url.split(".");
@@ -93,7 +129,7 @@ let addToPlaylist = (message, url) => {
                 sendMessage("plataforma de la canción no soportada");
         }
     } catch (error) {
-        sendMessage("ocurrió un error con el formato de la cancion");
+        sendMessage("ocurrió un error con el formato de la canción");
         sendErrorConsole(err);
     }
 }
@@ -104,7 +140,8 @@ let addYoutubeSong = (message, url) => {
             let songRequest = {
                 userName: message.author.username,
                 userAvatar: message.author.avatarURL,
-                songUrl: value.info.url
+                songUrl: value.info.url,
+                songTitle: value.info.title
             };
             let listSongs = songs[message.guild.id];
             listSongs.queue.push(songRequest);
@@ -115,7 +152,7 @@ let addYoutubeSong = (message, url) => {
                 });
             }
         }).catch(error => {
-            sendMessage("ocurrió un error obteniendo la información de la canción", message);
+            sendMessage("ocurrió un error obten iendo la información de la canción", message);
             sendErrorConsole(error);
         });
     } catch (error) {
@@ -132,7 +169,8 @@ let addYoutubePlaylist = (message, url) => {
                 let songRequest = {
                     userName: message.author.username,
                     userAvatar: message.author.avatarURL,
-                    songUrl: song.url
+                    songUrl: song.url,
+                    songTitle: song.name
                 };
                 listSongs.queue.push(songRequest);
             }
