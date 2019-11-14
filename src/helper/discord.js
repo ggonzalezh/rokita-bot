@@ -32,7 +32,7 @@ exports.sendMessage = (text, message) => {
 exports.createHelp = () => {
     let help = [{
         name: "Musica",
-        value: "`!play` `!skip` `!stop` `!shuffle`"
+        value: "`!play` `!skip` `!stop` `!playlist` `!shuffle`"
     },
     {
         name: "Banco del Distrito Federal de Puno",
