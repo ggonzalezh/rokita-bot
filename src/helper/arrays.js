@@ -82,6 +82,49 @@ let iconos = [
     }
 ]
 
+let rangos = [
+    {
+        id: 1,
+        point: 1,
+        name: "Chibolo"
+    },
+    {
+        id: 2,
+        point: 11,
+        name: "Serrano"
+    },
+    {
+        id: 3,
+        point: 21,
+        name: "Cholo"
+    },
+    {
+        id: 4,
+        point: 31,
+        name: "Causita"
+    },
+    {
+        id: 5,
+        point: 41,
+        name: "Chino maricon"
+    },
+    {
+        id: 6,
+        point: 51,
+        name: "El ignorante"
+    },
+    {
+        id: 7,
+        point: 61,
+        name: "El prossor"
+    },
+    {
+        id: 8,
+        point: 71,
+        name: "Zatugod"
+    }
+]
+
 module.exports.lePusiste = LePusiste;
 module.exports.dota = dota;
 module.exports.color = color;

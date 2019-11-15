@@ -32,6 +32,7 @@ exports.skipSong = (message) => {
         if (undefined != listSongs) {
             if (listSongs.dispatcher) {
                 listSongs.dispatcher.end();
+                sendMessage(":fast_forward: **Siguiente canción**", message);
             }
         } else {
             sendMessage("no hay canciones en la playlist", message);
@@ -48,6 +49,7 @@ exports.stopPlaylist = (message) => {
             let stopPlaylist = songs[message.guild.id];
             stopPlaylist.queue.length = 0;
             message.guild.voiceConnection.disconnect();
+            sendMessage(":mute: **Playlist detenida**", message);
         }
     } catch (err) {
         sendMessage("ocurrió un error con el comando `!stop`", message);
@@ -61,7 +63,7 @@ exports.shufflePlaylist = (message) => {
             let shuffleSongs = songs[message.guild.id];
             if (undefined != shuffleSongs) {
                 shuffle(shuffleSongs.queue);
-                sendMessage("playlist re-ordenada", message);
+                sendMessage(":twisted_rightwards_arrows: **Playlist re-ordenada**", message);
             }
         } else {
             sendMessage("la playlist esta vacía", message);
@@ -92,7 +94,7 @@ exports.getPlaylist = (message) => {
                     }
                 }
                 let footer = {
-                    text: "Siguientes 5 canciones "
+                    text: `Siguientes canciones`
                 }
                 embed = createEmbedMessage("Playlist", playlistArray, undefined, footer);
                 sendEmbedMessage(embed, message);
@@ -197,6 +199,7 @@ let searchSongYoutube = (message, args) => {
             let songArgs = args[index];
             searchSong = searchSong + " " + songArgs;
         }
+        sendMessage(":mag_right: **Buscando:**  `" + searchSong.trim().toUpperCase() + "`", message);
         youtubeSearch(searchSong.trim()).then(value => {
             let url = "www.youtube.com" + value.song.songName.url;
             addYoutubeSong(message, url);

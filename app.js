@@ -66,7 +66,9 @@ client.on("message", (message) => {
                 }
                 break;
             case "playlist":
-                getPlaylist(message);
+                if(userInChannel(message)){
+                    getPlaylist(message);
+                }
                 break;
             case "coins":
                 getCoins(message);
