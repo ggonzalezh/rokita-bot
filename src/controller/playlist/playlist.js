@@ -27,20 +27,7 @@ exports.playSong = (message, args) => {
 };
 
 exports.skipSong = (message) => {
-    try {
-        let listSongs = songs[message.guild.id];
-        if (undefined != listSongs) {
-            if (listSongs.dispatcher) {
-                listSongs.dispatcher.end();
-                sendMessage(":fast_forward: **Siguiente canción**", message);
-            }
-        } else {
-            sendMessage("no hay canciones en la playlist", message);
-        }
-    } catch (err) {
-        sendMessage("ocurrió un error con el comando `!skip`", message);
-        sendErrorConsole(err);
-    }
+    skipSongYoutube(message);
 };
 
 exports.stopPlaylist = (message) => {
@@ -154,7 +141,7 @@ let addYoutubeSong = (message, url) => {
                 });
             }
         }).catch(error => {
-            sendMessage("ocurrió un error obten iendo la información de la canción", message);
+            sendMessage("ocurrió un error obteniendo la información de la canción", message);
             sendErrorConsole(error);
         });
     } catch (error) {
@@ -214,8 +201,8 @@ let searchSongYoutube = (message, args) => {
 }
 
 let playList = async (connection, message) => {
+    let playlist = songs[message.guild.id];
     try {
-        let playlist = songs[message.guild.id];
         let requestSong = playlist.queue[0];
         playlist.dispatcher = connection.playOpusStream(await dtdl(requestSong.songUrl));
         if (playlist.queue.length > 0) {
@@ -238,6 +225,7 @@ let playList = async (connection, message) => {
             }).catch(err => {
                 sendMessage("ocurrió un error obteniendo la información de la canción", message);
                 sendErrorConsole(err);
+                sendMessage(requestSong.songUrl, message);
             });
         }
         playlist.queue.shift();
@@ -250,11 +238,30 @@ let playList = async (connection, message) => {
         });
 
     } catch (err) {
-        sendMessage("ocurrió un error con la reproducción de canciones", message);
+        sendMessage("No se ha podido reproducir la canción. :fast_forward: **Siguiente canción**", message);
         sendErrorConsole(err);
+        playlist.queue.shift();
+        playList(connection, message);
     }
 };
 
 let shuffle = (array) => {
     array.sort(() => Math.random() - 0.5);
-}
+};
+
+let skipSongYoutube = (message) => {
+    try {
+        let listSongs = songs[message.guild.id];
+        if (undefined != listSongs) {
+            if (listSongs.dispatcher) {
+                listSongs.dispatcher.end();
+                sendMessage(":fast_forward: **Siguiente canción**", message);
+            }
+        } else {
+            sendMessage("no hay canciones en la playlist", message);
+        }
+    } catch (err) {
+        sendMessage("ocurrió un error con el comando `!skip`", message);
+        sendErrorConsole(err);
+    }
+};
