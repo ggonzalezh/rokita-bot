@@ -1,5 +1,5 @@
-const { sendMessage } = require('../../../helper/discord');
-const { sendErrorConsole } = require('../../../helper/utils');
+const { sendMessage } = require('../../helper/discord');
+const { sendErrorConsole } = require('../../helper/utils');
 
 exports.betValidation = (message, args) => {
     try {

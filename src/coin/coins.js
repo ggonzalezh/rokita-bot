@@ -1,8 +1,8 @@
-const { insertCoins, getCoins, winCoins, loseCoins, findAllCoins } = require('../../service/database/coinsService');
-const { sendErrorConsole } = require('../../helper/utils');
-const { sendMessage, createEmbedMessage, sendEmbedMessage, fillArrayWithIcons} = require('../../helper/discord');
-const { isNewDay } = require('../../helper/utils');
-const array = require("../../helper/arrays");
+const { insertCoins, getCoins, winCoins, loseCoins, findAllCoins } = require('../service/coinsService');
+const { sendErrorConsole } = require('../helper/utils');
+const { sendMessage, createEmbedMessage, sendEmbedMessage, fillArrayWithIcons} = require('../helper/discord');
+const { isNewDay } = require('../helper/utils');
+const array = require("../helper/arrays");
 
 
 exports.getCoins = (message) => {

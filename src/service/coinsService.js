@@ -1,5 +1,5 @@
-const { coin } = require('../../model/coinSchema');
-const { formatDate } = require('../../helper/utils');
+const { coin } = require('../coin/model/coinSchema');
+const { formatDate } = require('../helper/utils');
 
 exports.insertCoins = async (userId, serverId, userName) => {
     return await insertCoinService(userId, serverId, userName);
