@@ -1,7 +1,7 @@
 const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./helper/youtube');
-const { secondsToMinute, sendErrorConsole } = require('../../helper/utils');
-const { sendMessage, sendEmbedMessage } = require('../../helper/discord');
-const { createEmbedMessage } = require('../../helper/discord');
+const { secondsToMinute, sendErrorConsole } = require('../helper/utils');
+const { sendMessage, sendEmbedMessage } = require('../helper/discord');
+const { createEmbedMessage } = require('../helper/discord');
 const youtubePlaylist = require("youtube-playlist");
 const dtdl = require('ytdl-core-discord');
 
@@ -204,7 +204,10 @@ let playList = async (connection, message) => {
     let playlist = songs[message.guild.id];
     try {
         let requestSong = playlist.queue[0];
-        playlist.dispatcher = connection.playOpusStream(await dtdl(requestSong.songUrl));
+        playlist.dispatcher = connection.playOpusStream(await dtdl(requestSong.songUrl, {
+            filter: "audioonly",
+            highWaterMark: 1<<25
+        }));
         if (playlist.queue.length > 0) {
             getSongInfo(requestSong.songUrl).then(value => {
                 let thumbnail = getThumbnail(requestSong.songUrl);
