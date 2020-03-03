@@ -1,18 +1,18 @@
 const { Client } = require("discord.js");
-const { logginCredentials } = require("./src/controller/discord/ready")
-const { sayHello, sendMessageToChannel } = require("./src/controller/discord/memberAdd");
-const { getCoins, betCoins, dailyCoins} = require('./src/controller/coin/coins');
-const { betValidation } = require('./src/controller/coin/helper/validation');
+const { logginCredentials } = require("./src/discord/ready")
+const { sayHello, sendMessageToChannel } = require("./src/discord/memberAdd");
+const { getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
+const { betValidation } = require('./src/coin/helper/validation');
 const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./src/helper/discord');
-const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/controller/playlist/playlist');
-const { validationPlay, userInChannel } = require('./src/controller/playlist/helper/validation');
+const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/playlist/playlist');
+const { validationPlay, userInChannel } = require('./src/playlist/helper/validation');
 const { sendErrorConsole } = require('./src/helper/utils');
 const config = require('./config.json');
 
 const prefix = config.discord.prefix;
 const client = new Client();
 
-client.login(process.env.BOT_TOKEN);
+client.login('NTczOTY4MTIwMDM3OTAwNDI2.Xk1upA.FaS5v8lUtI3nvV98L0ONBuAjQoc'/*process.env.BOT_TOKEN*/);
 
 client.on("ready", () => {
     logginCredentials(client);

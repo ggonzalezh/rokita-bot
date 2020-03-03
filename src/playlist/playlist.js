@@ -1,7 +1,7 @@
 const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./helper/youtube');
-const { secondsToMinute, sendErrorConsole } = require('../../helper/utils');
-const { sendMessage, sendEmbedMessage } = require('../../helper/discord');
-const { createEmbedMessage } = require('../../helper/discord');
+const { secondsToMinute, sendErrorConsole } = require('../helper/utils');
+const { sendMessage, sendEmbedMessage } = require('../helper/discord');
+const { createEmbedMessage } = require('../helper/discord');
 const youtubePlaylist = require("youtube-playlist");
 const dtdl = require('ytdl-core-discord');
 
