@@ -25,8 +25,21 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
     return embed;
 }
 
+exports.createEmbedWithImage = (image) =>{
+    let embedImage = new RichEmbed();
+
+    embedImage.setImage(image);
+    embedImage.setColor(0x860202);
+
+    return embedImage;
+}
+
 exports.sendMessage = async (text, message) => {
     return await sendMessageId(text, message);
+}
+
+exports.sendNormalMessage = (text, message) => {
+    message.channel.send(text);
 }
 
 exports.sendEmbedMessage = (embed, message) => {

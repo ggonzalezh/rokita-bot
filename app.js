@@ -1,13 +1,14 @@
 const { Client } = require("discord.js");
 const { logginCredentials } = require("./src/discord/ready")
 const { sayHello, addMemberToRole } = require("./src/discord/memberAdd");
-const { getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
+const { getCoins, betCoins, dailyCoins } = require('./src/coin/coins');
 const { betValidation } = require('./src/coin/helper/validation');
 const { createHelp } = require('./src/helper/discord');
 const { createEmbedMessage, sendMessage, sendEmbedMessage } = require('./src/discord/message');
-const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/playlist/playlist');
+const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist } = require('./src/playlist/playlist');
 const { validationPlay, userInChannel } = require('./src/playlist/helper/validation');
 const { sendErrorConsole } = require('./src/helper/utils');
+const { elPeruano, elEmpresario, elChileno, laProfecia, elVici } = require('./src/memes/memes');
 const config = require('./config.json');
 
 const prefix = config.discord.prefix;
@@ -57,7 +58,7 @@ client.on("message", (message) => {
                 }
                 break;
             case "playlist":
-                if(userInChannel(message)){
+                if (userInChannel(message)) {
                     getPlaylist(message);
                 }
                 break;
@@ -75,12 +76,27 @@ client.on("message", (message) => {
             case "leaderboards":
                 sendMessage("comando en construcción", message);
                 break;
+            case "elperuano":
+                elPeruano(message);
+                break;
+            case "elempresario":
+                elEmpresario(message);
+                break;
+            case "elchileno":
+                elChileno(message);
+                break;
+            case "profecia":
+                laProfecia(message);
+                break;
+            case "vici":
+                elVici(message);
+                break;
             case "ayuda":
                 fields = createHelp();
-                sendEmbedMessage(createEmbedMessage('RokitaBOT', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);
+                sendEmbedMessage(createEmbedMessage('Ayuda', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);
                 break;
             default:
-                sendMessage('no existe ese comando', message);
+                sendMessage('no existe ese comando. Usa el comando `-ayuda` para ver todos los que están disponibles.', message);
         }
     } catch (err) {
         sendMessage('ocurrió un error', message);
