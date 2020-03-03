@@ -53,3 +53,7 @@ exports.sendErrorConsole = (error) => {
     console.log(error);
     console.log("----------FIN----------")
 }
+
+exports.setTimeout = (() => {
+    console.log('after');
+},500);
