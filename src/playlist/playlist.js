@@ -245,7 +245,7 @@ let playList = async (connection, message) => {
         });
 
     } catch (err) {
-        sendMessage("No se ha podido reproducir la canción. :fast_forward: **Siguiente canción**", message);
+        sendMessage("No se ha podido reproducir la canción. **Siguiente canción** :fast_forward:", message);
         sendErrorConsole(err);
         playlist.queue.shift();
         playList(connection, message);

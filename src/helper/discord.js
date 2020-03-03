@@ -20,7 +20,6 @@ exports.fillArrayWithIcons = (icons) => {
     for (let index = 0; index < 3; index++) {
         array.push(icons[Math.floor(Math.random() * icons.length)])
     }
-
-    let iconsEquals = array.every((val, i, arr) => val === arr[0]);
+    
     return array;
 }

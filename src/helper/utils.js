@@ -27,25 +27,14 @@ exports.secondsToMinute = (seconds) => {
 }
 
 exports.isNewDay = (value) => {
-    var isNewDay;
-    var dateNow = moment(new Date()).format('DD/MM/YYYY')
-    var arrayDateNow = dateNow.split('/')
-    var arrayDateDB = value.user.date.split('/');
-    if(arrayDateNow[2] >= arrayDateDB[2]){
-        if(arrayDateNow[1] >= arrayDateDB[1]){
-            if (arrayDateNow[0] > arrayDateDB[0]) {
-                isNewDay = true;
-            } else {
-                isNewDay = false;
-            }
-        }else{
-            isNewDay = false;
-        }
+    let dateNow = moment(new Date(), 'DD/MM/YYYY').format('DD/MM/YYYY');
+    let dateDb = moment(new Date(value.user.date), 'DD/MM/YYYY').format('DD/MM/YYYY');
+    let isAfter = moment(dateNow).isAfter(dateDb);
+    if(isAfter){
+        return true;
     }else{
-        isNewDay = false;
+        return false;
     }
-
-    return isNewDay;
 }
 
 exports.sendErrorConsole = (error) => {
@@ -53,7 +42,3 @@ exports.sendErrorConsole = (error) => {
     console.log(error);
     console.log("----------FIN----------")
 }
-
-exports.setTimeout = (() => {
-    console.log('after');
-},500);
