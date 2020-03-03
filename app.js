@@ -12,7 +12,7 @@ const config = require('./config.json');
 const prefix = config.discord.prefix;
 const client = new Client();
 
-client.login('NTczOTY4MTIwMDM3OTAwNDI2.Xk1upA.FaS5v8lUtI3nvV98L0ONBuAjQoc'/*process.env.BOT_TOKEN*/);
+client.login('NTczOTY4MTIwMDM3OTAwNDI2.Xl5fwA.dVIUKSUykMJ4IxfewzADkAZg9oc'/*process.env.BOT_TOKEN*/);
 
 client.on("ready", () => {
     logginCredentials(client);
