@@ -1,9 +1,10 @@
 const { Client } = require("discord.js");
 const { logginCredentials } = require("./src/discord/ready")
-const { sayHello, sendMessageToChannel } = require("./src/discord/memberAdd");
+const { sayHello, addMemberToRole } = require("./src/discord/memberAdd");
 const { getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
 const { betValidation } = require('./src/coin/helper/validation');
-const { createEmbedMessage, createHelp, sendMessage, sendEmbedMessage } = require('./src/helper/discord');
+const { createHelp } = require('./src/helper/discord');
+const { createEmbedMessage, sendMessage, sendEmbedMessage } = require('./src/discord/message');
 const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/playlist/playlist');
 const { validationPlay, userInChannel } = require('./src/playlist/helper/validation');
 const { sendErrorConsole } = require('./src/helper/utils');
@@ -20,17 +21,7 @@ client.on("ready", () => {
 
 client.on("guildMemberAdd", (member) => {
     sayHello(member);
-    getCoins(member.id, member.guild.id).then(value => {
-        if (undefined == value.user.date) {
-            insertCoins(member.id, member.guild.id, member.displayName).then().catch(err => {
-                sendMessageToChannel(member, "general", " ocurrió un error en el regalo de monedas");
-                console.log(err);
-            });
-        }
-    }).catch(err => {
-        sendMessageToChannel(member, "general", "Ocurrió un error al obtener tus coins")
-        console.log(err);
-    });
+    addMemberToRole(member);
 });
 
 
@@ -86,8 +77,7 @@ client.on("message", (message) => {
                 break;
             case "ayuda":
                 fields = createHelp();
-                sendMessage('**Inbox perrito !** :incoming_envelope:', message);
-                message.author.send(createEmbedMessage(undefined, fields, undefined, undefined));
+                sendEmbedMessage(createEmbedMessage('RokitaBOT', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);
                 break;
             default:
                 sendMessage('no existe ese comando', message);

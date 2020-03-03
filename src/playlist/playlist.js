@@ -1,7 +1,6 @@
 const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./helper/youtube');
-const { secondsToMinute, sendErrorConsole } = require('../helper/utils');
-const { sendMessage, sendEmbedMessage } = require('../helper/discord');
-const { createEmbedMessage } = require('../helper/discord');
+const { secondsToMinute, sendErrorConsole, setTimeout } = require('../helper/utils');
+const { sendMessage, sendEmbedMessage, createEmbedMessage, editMessage } = require('../discord/message');
 const youtubePlaylist = require("youtube-playlist");
 const dtdl = require('ytdl-core-discord');
 
@@ -36,7 +35,7 @@ exports.stopPlaylist = (message) => {
             let stopPlaylist = songs[message.guild.id];
             stopPlaylist.queue.length = 0;
             message.guild.voiceConnection.disconnect();
-            sendMessage(":mute: **Playlist detenida**", message);
+            message.react('🛑');
         }
     } catch (err) {
         sendMessage("ocurrió un error con el comando `!stop`", message);
@@ -50,7 +49,7 @@ exports.shufflePlaylist = (message) => {
             let shuffleSongs = songs[message.guild.id];
             if (undefined != shuffleSongs) {
                 shuffle(shuffleSongs.queue);
-                sendMessage(":twisted_rightwards_arrows: **Playlist re-ordenada**", message);
+                message.react('🔀');
             }
         } else {
             sendMessage("la playlist esta vacía", message);
@@ -76,7 +75,7 @@ exports.getPlaylist = (message) => {
                         value: `[${song.songTitle}](${song.songUrl})`
                     }
                     playlistArray.push(fields);
-                    if(index >= 5){
+                    if (index >= 5) {
                         break;
                     }
                 }
@@ -86,9 +85,9 @@ exports.getPlaylist = (message) => {
                 embed = createEmbedMessage("Playlist", playlistArray, undefined, footer);
                 sendEmbedMessage(embed, message);
             } else {
-                sendMessage("no hay canciones en espera", message);   
+                sendMessage("no hay canciones en espera", message);
             }
-        }else{
+        } else {
             sendMessage('no hay canciones en espera', message);
         }
     } catch (err) {
@@ -123,7 +122,7 @@ let addToPlaylist = (message, url) => {
     }
 }
 
-let addYoutubeSong = (message, url) => {
+let addYoutubeSong = (message, url, messageId) => {
     try {
         getSongInfo(url).then(value => {
             let songRequest = {
@@ -134,7 +133,11 @@ let addYoutubeSong = (message, url) => {
             };
             let listSongs = songs[message.guild.id];
             listSongs.queue.push(songRequest);
-            sendMessage("la canción `" + value.info.title + "` fue agregada a la playlist.", message);
+            if (messageId) {
+                editMessage(messageId, message.author.toString() + ", la canción `" + value.info.title + "` fue agregada a la playlist.", message.channel)
+            } else {
+                sendMessage("la canción `" + value.info.title + "` fue agregada a la playlist.", message);
+            }
             if (!message.guild.voiceConnection) {
                 message.member.voiceChannel.join().then((connection) => {
                     playList(connection, message);
@@ -186,13 +189,14 @@ let searchSongYoutube = (message, args) => {
             let songArgs = args[index];
             searchSong = searchSong + " " + songArgs;
         }
-        sendMessage(":mag_right: **Buscando:**  `" + searchSong.trim().toUpperCase() + "`", message);
-        youtubeSearch(searchSong.trim()).then(value => {
-            let url = "www.youtube.com" + value.song.songName.url;
-            addYoutubeSong(message, url);
-        }).catch(err => {
-            sendMessage("ocurrió un error buscando la canción", message);
-            sendErrorConsole(err);
+        sendMessage(":mag_right: **Buscando:**  `" + searchSong.trim().toUpperCase() + "`", message).then(messageId => {
+            youtubeSearch(searchSong.trim()).then(value => {
+                let url = "www.youtube.com" + value.song.songName.url;
+                addYoutubeSong(message, url, messageId);
+            }).catch(err => {
+                sendMessage("ocurrió un error buscando la canción", message);
+                sendErrorConsole(err);
+            });
         });
     } catch (err) {
         sendMessage("ocurrió un error buscando la canción", message);
@@ -206,7 +210,7 @@ let playList = async (connection, message) => {
         let requestSong = playlist.queue[0];
         playlist.dispatcher = connection.playOpusStream(await dtdl(requestSong.songUrl, {
             filter: "audioonly",
-            highWaterMark: 1<<25
+            highWaterMark: 1 << 25
         }));
         if (playlist.queue.length > 0) {
             getSongInfo(requestSong.songUrl).then(value => {
@@ -241,7 +245,7 @@ let playList = async (connection, message) => {
         });
 
     } catch (err) {
-        sendMessage("No se ha podido reproducir la canción. :fast_forward: **Siguiente canción**", message);
+        sendMessage("No se ha podido reproducir la canción. **Siguiente canción** :fast_forward:", message);
         sendErrorConsole(err);
         playlist.queue.shift();
         playList(connection, message);
@@ -258,10 +262,10 @@ let skipSongYoutube = (message) => {
         if (undefined != listSongs) {
             if (listSongs.dispatcher) {
                 listSongs.dispatcher.end();
-                sendMessage(":fast_forward: **Siguiente canción**", message);
+                message.react('⏩');
             }
         } else {
-            sendMessage("no hay canciones en la playlist", message);
+            sendMessage("no hay canciones en la playlist.", message);
         }
     } catch (err) {
         sendMessage("ocurrió un error con el comando `!skip`", message);

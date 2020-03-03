@@ -1,6 +1,7 @@
 const { insertCoins, getCoins, winCoins, loseCoins, findAllCoins } = require('../service/coinsService');
 const { sendErrorConsole } = require('../helper/utils');
-const { sendMessage, createEmbedMessage, sendEmbedMessage, fillArrayWithIcons} = require('../helper/discord');
+const { fillArrayWithIcons } = require('../helper/discord');
+const { sendMessage, createEmbedMessage, sendEmbedMessage } = require('../discord/message')
 const { isNewDay } = require('../helper/utils');
 const array = require("../helper/arrays");
 
@@ -19,7 +20,7 @@ exports.getCoins = (message) => {
                 }];
                 sendEmbedMessage(createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png"), message);
             } else {
-                sendMessage("no tienes coins. Usa el comando` + " `!daily`, message);
+                sendMessage("no tienes coins. Usa el comando `" + "!daily`.", message);
             }
         }).catch(err => {
             sendMessage("ocurrió un error al obtener tus coins", message);
@@ -77,15 +78,15 @@ exports.betCoins = (message, args) => {
                     if (isArrayEquals) {
                         let coinsWins = (value.user.coins - args[1]) + (args[1] * 2);
                         winCoins(message.author.id, message.guild.id, coinsWins).then(value => {
-                            sendMessage("Felicitaciones has ganado " + (args[1] * 2) + " coins.Tu balance actual es de: $" + value.user.coins + ".", message);
+                            sendMessage("Felicitaciones has ganado `$" + (args[1] * 2) + "` coins. Tu balance actual es de: `$" + value.user.coins + "`.", message);
                         }).catch(err => {
                             sendMessage('ocurrió un error añadiendo coins a tu cuenta', message);
                             sendErrorConsole(err);
                         })
                     } else {
                         let coinsLoses = value.user.coins - args[1];
-                        loseCoins(message.author.id, message.guild.id, coinsLoses).then().catch(err =>{
-                            sendErrorConsole(err);  
+                        loseCoins(message.author.id, message.guild.id, coinsLoses).then().catch(err => {
+                            sendErrorConsole(err);
                         });
                     }
                 } else {
@@ -94,7 +95,7 @@ exports.betCoins = (message, args) => {
             } else {
                 sendMessage("no tienes coins. Usa el comando" + " `!daily`", message);
             }
-        }).catch(err => { 
+        }).catch(err => {
             sendMessage("ocurrió un error usando el comando" + " `!bet`", message);
             sendErrorConsole(err);
         });

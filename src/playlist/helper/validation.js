@@ -1,4 +1,4 @@
-const { sendMessage } = require('../../helper/discord');
+const { sendMessage } = require('../../discord/message');
 const { sendErrorConsole } = require('../../helper/utils');
 
 exports.validationPlay = (message, args) => {
