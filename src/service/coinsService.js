@@ -67,9 +67,9 @@ let insertCoinService = (userId, serverId, userName) => {
                     }
                 })
             } else {
-                var dateNow = formatDate(new Date());
+                let dateNow = formatDate(new Date());
                 if (res == null) {
-                    var newUser = new coin({
+                    let newUser = new coin({
                         userID: userId,
                         serverID: serverId,
                         userName: userName,
