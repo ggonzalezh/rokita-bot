@@ -1,23 +1,23 @@
-const { RichEmbed } = require('discord.js');
+const {MessageEmbed} = require('discord.js');
 
 exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail = undefined, footer = undefined) => {
-    let embed = new RichEmbed();
+    let embed = new MessageEmbed();
 
-    if (undefined != author) {
+    if (undefined !== author) {
         embed.setAuthor(author);
     }
 
-    if (fields.length > 0 && undefined != fields) {
+    if (fields.length > 0) {
         for (const field of fields) {
             embed.addField(field.name, " " + field.value)
         }
     }
 
-    if (undefined != thumbNail) {
+    if (undefined !== thumbNail) {
         embed.setThumbnail(thumbNail);
     }
 
-    if (undefined != footer) {
+    if (undefined !== footer) {
         embed.setFooter(footer.text, footer.icon);
     }
     embed.setColor(0x860202);
@@ -25,8 +25,8 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
     return embed;
 }
 
-exports.createEmbedWithImage = (image) =>{
-    let embedImage = new RichEmbed();
+exports.createEmbedWithImage = (image) => {
+    let embedImage = new MessageEmbed();
 
     embedImage.setImage(image);
     embedImage.setColor(0x860202);
@@ -47,11 +47,11 @@ exports.sendEmbedMessage = (embed, message) => {
 }
 
 exports.editMessage = (messageId, text, channel) => {
-    channel.fetchMessage(messageId).then(message => {
-		message.edit(text);
-	}).catch(() => {
-		errorLog.error(`"Could not edit message ${messageId}" "${channel.guild.name}" "${text}"`);
-	}); 
+    channel.messages.fetch(messageId).then(message => {
+        message.edit(text).then();
+    }).catch((err) => {
+        console.log(err);
+    });
 }
 
 let sendMessageId = (text, message) => {

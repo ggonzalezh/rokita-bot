@@ -6,9 +6,12 @@ exports.createHelp = () => {
         },
         {
             name: "Música",
-            value: "`-play`: Toca tu música preferida de Youtube en el canal. Puedes usar el link de la canción/playlist o buscarla con el título de la canción.\n   "
+            value: "`-play {link/titulo}`: Toca tu música preferida de Youtube en el canal. Puedes usar el link de la canción/playlist o buscarla por el título de la canción.\n   "
                 + "`-skip`: Reproduce la siguiente canción de la playlist.\n"
-                + "`-stop`: Detiene la reproducción de canciones de la playlist. También, elimina las canciones.\n"
+                + "`-stop`: Detiene la reproducción playlist actual.\n"
+                + "`-pause`: Pausa la reproducción de canciones de la playlist.\n"
+                + "`-resume`: Reanuda la reproducción de canciones de la playlist.\n"
+                + "`-volumen {nivel de volumen}`: Ajusta el volumen de reproducción de la playlist. Los niveles de volumen son: `bajo+` `bajo` `normal` `alto` `alto+`. \n"
                 + "`-playlist`: Mostrará las siguientes 5 canciones de la playlist.\n"
                 + "`-shuffle`: Re-ordenara las canciones de la playlist."
         },

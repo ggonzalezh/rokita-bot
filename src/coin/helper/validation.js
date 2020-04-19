@@ -16,7 +16,7 @@ exports.betValidation = (message, args) => {
 let emptyArgs = (message, args) => {
     try {
         if (!args[1]) {
-            sendMessage("falto el link o el nombre de la canción", message);
+            sendMessage("falto el link o el nombre de la canción", message).then();
             return false;
         } else {
             return true;

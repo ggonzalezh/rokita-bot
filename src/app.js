@@ -1,20 +1,20 @@
-const { Client } = require("discord.js");
-const { logginCredentials } = require("./src/discord/ready")
-const { sayHello, addMemberToRole } = require("./src/discord/memberAdd");
-const { getCoins, betCoins, dailyCoins } = require('./src/coin/coins');
-const { betValidation } = require('./src/coin/helper/validation');
-const { createHelp } = require('./src/helper/discord');
-const { createEmbedMessage, sendMessage, sendEmbedMessage } = require('./src/discord/message');
-const { playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist } = require('./src/playlist/playlist');
-const { validationPlay, userInChannel } = require('./src/playlist/helper/validation');
-const { sendErrorConsole } = require('./src/helper/utils');
-const { elPeruano, elEmpresario, elChileno, laProfecia, elVici } = require('./src/memes/memes');
-const config = require('./config.json');
+const {Client} = require("discord.js");
+const {logginCredentials} = require("./discord/ready")
+const {sayHello, addMemberToRole} = require("./discord/memberAdd");
+const {getCoins, betCoins, dailyCoins} = require('./coin/coins');
+const {betValidation} = require('./coin/helper/validation');
+const {createHelp} = require('./helper/discord');
+const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./discord/message');
+const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist, setVolumen} = require('./playlist/playlist');
+const {validationPlay, userInChannel} = require('./playlist/helper/validation');
+const {sendErrorConsole} = require('./helper/utils');
+const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./memes/memes');
+const config = require('../config.json');
 
 const prefix = config.discord.prefix;
 const client = new Client();
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN).then();
 
 client.on("ready", () => {
     logginCredentials(client);
@@ -39,17 +39,32 @@ client.on("message", (message) => {
         switch (args[0].toLowerCase()) {
             case "play":
                 if (validationPlay(message, args)) {
-                    playSong(message, args);
+                    playSongs(message, args);
                 }
                 break;
             case "skip":
                 if (userInChannel(message)) {
-                    skipSong(message);
+                    skipPlaylist(message);
                 }
                 break;
             case "stop":
                 if (userInChannel(message)) {
                     stopPlaylist(message);
+                }
+                break;
+            case 'pause':
+                if(userInChannel(message)){
+                    pausePlaylist(message);
+                }
+                break;
+            case 'resume':
+                if(userInChannel(message)){
+                    resumePlaylist(message);
+                }
+                break;
+            case 'volumen':
+                if(userInChannel(message)){
+                    setVolumen(message, args[1]);
                 }
                 break;
             case "shuffle":
@@ -74,7 +89,7 @@ client.on("message", (message) => {
                 }
                 break;
             case "leaderboards":
-                sendMessage("comando en construcción", message);
+                sendMessage("comando en construcción", message).then();
                 break;
             case "elperuano":
                 elPeruano(message);
@@ -96,10 +111,10 @@ client.on("message", (message) => {
                 sendEmbedMessage(createEmbedMessage('Ayuda', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);
                 break;
             default:
-                sendMessage('no existe ese comando. Usa el comando `-ayuda` para ver todos los que están disponibles.', message);
+                sendMessage('no existe ese comando. Usa el comando `-ayuda` para ver todos los que están disponibles.', message).then();
         }
     } catch (err) {
-        sendMessage('ocurrió un error', message);
+        sendMessage('ocurrió un error', message).then();
         sendErrorConsole(err);
     }
 });

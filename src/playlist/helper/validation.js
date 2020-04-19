@@ -24,7 +24,7 @@ exports.userInChannel = (message) => {
 let messageHasSong = (message, args) => {
     try {
         if (!args[1]) {
-            sendMessage("falto el link o el nombre de la canción", message);
+            sendMessage("falto el link o el nombre de la canción", message).then();
             return false;
         } else {
             return true;
@@ -36,8 +36,8 @@ let messageHasSong = (message, args) => {
 
 let userIsInChannel = (message) => {
     try {
-        if (!message.member.voiceChannel) {
-            sendMessage("tienes que estar en el canal para usar el comando `!play`", message);
+        if (!message.member.voice.channel) {
+            sendMessage("tienes que estar en el canal para usar el comando.", message).then();
             return false;
         }else{
             return true;
