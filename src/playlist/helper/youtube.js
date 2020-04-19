@@ -1,6 +1,5 @@
 const ytdl = require("ytdl-core");
 const youtubeThumbnail = require('youtube-thumbnail');
-const youtubePlaylist = require("youtube-playlist");
 const youtubeSearch = require("yt-search");
 
 exports.getSongInfo = async (uri) => {
@@ -40,7 +39,7 @@ let ytdlInfo = (uri) => {
 
                 })
             }
-        })
+        }).then()
     })
 };
 

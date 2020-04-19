@@ -1,21 +1,21 @@
-const { validateUrl, getSongInfo, getThumbnail, youtubeSearch } = require('./helper/youtube');
-const { secondsToMinute, sendErrorConsole, setTimeout } = require('../helper/utils');
-const { sendMessage, sendEmbedMessage, createEmbedMessage, editMessage } = require('../discord/message');
+const {validateUrl, getSongInfo, getThumbnail, youtubeSearch} = require('./helper/youtube');
+const {secondsToMinute, sendErrorConsole} = require('../helper/utils');
+const {sendMessage, sendEmbedMessage, createEmbedMessage, editMessage} = require('../discord/message');
 const youtubePlaylist = require("youtube-playlist");
 const dtdl = require('ytdl-core-discord');
 
-let songs = {};
+let playlist = {};
 
-exports.playSong = (message, args) => {
+exports.playSongs = (message, args) => {
     try {
-        if (!songs[message.guild.id]) {
-            songs[message.guild.id] = {
-                queue: []
+        if (!playlist[message.guild.id]) {
+            playlist[message.guild.id] = {
+                queue: [],
+                paused: false
             }
         }
-        let isLink = args[1].includes("https://");
-        if (isLink) {
-            addToPlaylist(message, args[1]);
+        if (args[1].includes("https://")) {
+            addSongToPlaylist(message, args[1]);
         } else {
             searchSongYoutube(message, args);
         }
@@ -25,17 +25,63 @@ exports.playSong = (message, args) => {
     }
 };
 
-exports.skipSong = (message) => {
-    skipSongYoutube(message);
+exports.skipPlaylist = (message) => {
+    try {
+        if (undefined !== playlist[message.guild.id]) {
+            if (playlist[message.guild.id].dispatcher) {
+                playlist[message.guild.id].dispatcher.end();
+                message.react('⏩').then();
+            }
+        } else {
+            sendMessage("no hay canciones en la playlist.", message).then();
+        }
+    } catch (err) {
+        sendMessage("ocurrió un error con el comando `!skip`", message).then();
+        sendErrorConsole(err);
+    }
 };
+
+exports.pausePlaylist = (message) => {
+    try {
+        if (undefined !== playlist[message.guild.id] && playlist[message.guild.id].dispatcher) {
+            if (playlist[message.guild.id].paused === false) {
+                playlist[message.guild.id].dispatcher.pause(true);
+                playlist[message.guild.id].paused = true;
+                message.react('⏸').then();
+            } else {
+                sendMessage("la `playlist` esta pausada.", message).then();
+            }
+        }
+    } catch (err) {
+        sendMessage("ocurrió un error con el comando `!pause`", message).then();
+        sendErrorConsole(err);
+    }
+};
+
+exports.resumePlaylist = (message) => {
+    try {
+        if (undefined !== playlist[message.guild.id] && playlist[message.guild.id].dispatcher) {
+            if (playlist[message.guild.id].paused === true) {
+                playlist[message.guild.id].dispatcher.resume();
+                playlist[message.guild.id].paused = false;
+                message.react('▶').then();
+            } else {
+                sendMessage("la `playlist` no esta pausada.", message).then();
+            }
+        }
+    } catch (err) {
+        sendMessage("ocurrió un error con el comando `!resume`", message).then();
+        sendErrorConsole(err);
+    }
+}
 
 exports.stopPlaylist = (message) => {
     try {
         if (message.guild.voice) {
-            let stopPlaylist = songs[message.guild.id];
-            stopPlaylist.queue.length = 0;
-            if(message.guild.voice.channel){
+            playlist[message.guild.id].queue.length = 0;
+            if (message.guild.voice.channel) {
                 message.guild.voice.channel.leave();
+                playlist = {};
                 message.react('🛑').then();
             }
         }
@@ -47,10 +93,9 @@ exports.stopPlaylist = (message) => {
 
 exports.shufflePlaylist = (message) => {
     try {
-        if (songs[message.guild.id]) {
-            let shuffleSongs = songs[message.guild.id];
-            if (undefined !== shuffleSongs) {
-                shuffle(shuffleSongs.queue);
+        if (playlist[message.guild.id]) {
+            if (undefined !== playlist[message.guild.id]) {
+                playlist[message.guild.id].queue.sort(() => Math.random() - 0.5);
                 message.react('🔀').then();
             }
         } else {
@@ -64,9 +109,8 @@ exports.shufflePlaylist = (message) => {
 
 exports.getPlaylist = (message) => {
     try {
-        if (songs[message.guild.id]) {
-            let listSong = songs[message.guild.id]
-            let songRequest = listSong.queue
+        if (playlist[message.guild.id]) {
+            let songRequest = playlist[message.guild.id].queue
             if (songRequest.length > 0) {
                 let playlistArray = []
                 let index = 0;
@@ -98,22 +142,18 @@ exports.getPlaylist = (message) => {
     }
 }
 
-let addToPlaylist = (message, url) => {
+let addSongToPlaylist = (message, url) => {
     try {
         let platform = url.split(".");
         switch (platform[1]) {
             case "youtube":
-                let isValidLink = validateUrl(url);
-                if (isValidLink) {
+                if (validateUrl(url)) {
                     addYoutubeSong(message, url);
                 } else if (url.includes('playlist')) {
                     addYoutubePlaylist(message, url);
                 } else {
                     sendMessage("formato de canción no soportado", message).then();
                 }
-                break;
-            case "spotify":
-                sendMessage("esta en construcción la api de spotify", message).then();
                 break;
             default:
                 sendMessage("plataforma de la canción no soportada").then();
@@ -133,8 +173,7 @@ let addYoutubeSong = (message, url, messageId) => {
                 songUrl: value.info.url,
                 songTitle: value.info.title
             };
-            let listSongs = songs[message.guild.id];
-            listSongs.queue.push(songRequest);
+            playlist[message.guild.id].queue.push(songRequest);
             if (messageId) {
                 editMessage(messageId, message.author.toString() + ", la canción `" + value.info.title + "` fue agregada a la playlist.", message.channel)
             } else {
@@ -142,7 +181,7 @@ let addYoutubeSong = (message, url, messageId) => {
             }
             if (!message.guild.voice || !message.guild.voice.channel) {
                 message.member.voice.channel.join().then((connection) => {
-                    playList(connection, message).then();
+                    playSong(connection, message).then();
                 });
             }
         }).catch(error => {
@@ -157,8 +196,8 @@ let addYoutubeSong = (message, url, messageId) => {
 
 let addYoutubePlaylist = (message, url) => {
     try {
-        let listSongs = songs[message.guild.id];
         youtubePlaylist(url).then(value => {
+            let canciones = 0;
             for (let song of value.data.playlist) {
                 let songRequest = {
                     userName: message.author.username,
@@ -166,12 +205,13 @@ let addYoutubePlaylist = (message, url) => {
                     songUrl: song.url,
                     songTitle: song.name
                 };
-                listSongs.queue.push(songRequest);
+                playlist[message.guild.id].queue.push(songRequest);
+                canciones++;
             }
-            sendMessage("se agregaron `" + listSongs.queue.length + "` canciones a la playlist.", message).then();
-            if (!message.guild.voice.connection) {
+            sendMessage("se agregaron `" + canciones + "` canciones a la playlist.", message).then();
+            if (!message.guild.voice || !message.guild.voice.channel) {
                 message.member.voice.channel.join().then((connection) => {
-                    playList(connection, message).then();
+                    playSong(connection, message).then();
                 });
             }
         }).catch(err => {
@@ -206,71 +246,48 @@ let searchSongYoutube = (message, args) => {
     }
 }
 
-let playList = async (connection, message) => {
-    let playlist = songs[message.guild.id];
+let playSong = async (connection, message) => {
     try {
-        let requestSong = playlist.queue[0];
-        playlist.dispatcher = connection.play(await dtdl(requestSong.songUrl, {
+        playlist[message.guild.id].dispatcher = connection.play(await dtdl(playlist[message.guild.id].queue[0].songUrl, {
             filter: "audioonly",
             highWaterMark: 1 << 25
         }), {type: 'opus'});
-        if (playlist.queue.length > 0) {
-            getSongInfo(requestSong.songUrl).then(value => {
-                let thumbnail = getThumbnail(requestSong.songUrl);
+        if (playlist[message.guild.id].queue.length > 0) {
+            getSongInfo(playlist[message.guild.id].queue[0].songUrl).then(value => {
+                let thumbnail = getThumbnail(playlist[message.guild.id].queue[0].songUrl);
                 let fields = [{
                     name: "Titulo de la canción",
                     value: `[${value.info.title}](${value.info.url})`
 
                 },
-                {
-                    name: "Duración",
-                    value: secondsToMinute(parseInt(value.info.duration))
-                }];
+                    {
+                        name: "Duración",
+                        value: secondsToMinute(parseInt(value.info.duration))
+                    }];
                 let footer = {
-                    text: `Canción pedida por ${requestSong.userName}`,
-                    icon: requestSong.userAvatar
+                    text: `Canción pedida por ${playlist[message.guild.id].queue[0].userName}`,
+                    icon: playlist[message.guild.id].queue[0].userAvatar
                 };
+                playlist[message.guild.id].queue.shift();
+                playlist[message.guild.id].dispatcher.on("finish", () => {
+                    if (playlist[message.guild.id].queue[0]) {
+                        playSong(connection, message);
+                    } else {
+                        connection.disconnect();
+                    }
+                });
                 sendEmbedMessage(createEmbedMessage("Escuchando Ahora", fields, thumbnail, footer), message);
             }).catch(err => {
                 sendMessage("ocurrió un error obteniendo la información de la canción", message);
                 sendErrorConsole(err);
-                sendMessage(requestSong.songUrl, message);
+                sendMessage(playlist[message.guild.id].queue[0].songUrl, message);
             });
         }
-        playlist.queue.shift();
-        playlist.dispatcher.on("finish", () => {
-            if (playlist.queue[0]) {
-                playList(connection, message);
-            } else {
-                connection.disconnect();
-            }
-        });
 
     } catch (err) {
         sendMessage("No se ha podido reproducir la canción. **Siguiente canción** :fast_forward:", message).then();
         sendErrorConsole(err);
-        playlist.queue.shift();
-        playList(connection, message).then();
-    }
-};
-
-let shuffle = (array) => {
-    array.sort(() => Math.random() - 0.5);
-};
-
-let skipSongYoutube = (message) => {
-    try {
-        let listSongs = songs[message.guild.id];
-        if (undefined !== listSongs) {
-            if (listSongs.dispatcher) {
-                listSongs.dispatcher.end();
-                message.react('⏩').then();
-            }
-        } else {
-            sendMessage("no hay canciones en la playlist.", message).then();
-        }
-    } catch (err) {
-        sendMessage("ocurrió un error con el comando `!skip`", message).then();
-        sendErrorConsole(err);
+        playlist[message.guild.id].queue.shift();
+        playSong(connection, message).then();
     }
 };

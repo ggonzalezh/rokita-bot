@@ -5,7 +5,7 @@ const {getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
 const {betValidation} = require('./src/coin/helper/validation');
 const {createHelp} = require('./src/helper/discord');
 const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
-const {playSong, skipSong, stopPlaylist, shufflePlaylist, getPlaylist} = require('./src/playlist/playlist');
+const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist} = require('./src/playlist/playlist');
 const {validationPlay, userInChannel} = require('./src/playlist/helper/validation');
 const {sendErrorConsole} = require('./src/helper/utils');
 const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./src/memes/memes');
@@ -39,17 +39,27 @@ client.on("message", (message) => {
         switch (args[0].toLowerCase()) {
             case "play":
                 if (validationPlay(message, args)) {
-                    playSong(message, args);
+                    playSongs(message, args);
                 }
                 break;
             case "skip":
                 if (userInChannel(message)) {
-                    skipSong(message);
+                    skipPlaylist(message);
                 }
                 break;
             case "stop":
                 if (userInChannel(message)) {
                     stopPlaylist(message);
+                }
+                break;
+            case 'pause':
+                if(userInChannel(message)){
+                    pausePlaylist(message);
+                }
+                break;
+            case 'resume':
+                if(userInChannel(message)){
+                    resumePlaylist(message);
                 }
                 break;
             case "shuffle":
