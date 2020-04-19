@@ -1,15 +1,15 @@
 const {Client} = require("discord.js");
-const {logginCredentials} = require("./discord/ready")
-const {sayHello, addMemberToRole} = require("./discord/memberAdd");
-const {getCoins, betCoins, dailyCoins} = require('./coin/coins');
-const {betValidation} = require('./coin/helper/validation');
-const {createHelp} = require('./helper/discord');
-const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./discord/message');
-const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist, setVolumen} = require('./playlist/playlist');
-const {validationPlay, userInChannel} = require('./playlist/helper/validation');
-const {sendErrorConsole} = require('./helper/utils');
-const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./memes/memes');
-const config = require('../config.json');
+const {logginCredentials} = require("./src/discord/ready")
+const {sayHello, addMemberToRole} = require("./src/discord/memberAdd");
+const {getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
+const {betValidation} = require('./src/coin/helper/validation');
+const {createHelp} = require('./src/helper/discord');
+const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
+const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist, setVolumen} = require('./src/playlist/playlist');
+const {validationPlay, userInChannel} = require('./src/playlist/helper/validation');
+const {sendErrorConsole} = require('./src/helper/utils');
+const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./src/memes/memes');
+const config = require('./config.json');
 
 const prefix = config.discord.prefix;
 const client = new Client();

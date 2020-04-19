@@ -2,9 +2,9 @@
   "name": "RokitaBOT",
   "version": "1.0.0",
   "description": "RokitaBot",
-  "main": "src/app.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node app.js"
   },
   "author": "ggonzalezh",
   "license": "ISC",
