@@ -142,6 +142,44 @@ exports.getPlaylist = (message) => {
     }
 }
 
+exports.setVolumen = (message, nivelVolumen) => {
+    try {
+        if (undefined !== playlist[message.guild.id] && playlist[message.guild.id].dispatcher) {
+            if(nivelVolumen){
+                switch (nivelVolumen.toLowerCase()) {
+                    case 'bajo+':
+                        playlist[message.guild.id].dispatcher.setVolume(0.2);
+                        message.react('🔈').then();
+                        break;
+                    case 'bajo':
+                        playlist[message.guild.id].dispatcher.setVolume(0.5);
+                        message.react('🔉').then();
+                        break;
+                    case 'normal':
+                        playlist[message.guild.id].dispatcher.setVolume(1);
+                        message.react('🔊').then();
+                        break;
+                    case 'alto':
+                        playlist[message.guild.id].dispatcher.setVolume(1.5);
+                        message.react('🔊').then();
+                        break;
+                    case 'alto+':
+                        playlist[message.guild.id].dispatcher.setVolume(2);
+                        message.react('🔊').then();
+                        break;
+                    default:
+                        sendMessage("los niveles de volumen son: `bajo+` `bajo` `normal` `alto` `alto+`.", message).then();
+                }
+            }else{
+                sendMessage("falto el colocar el nivel de volumen. Los niveles de volumen son: `bajo+` `bajo` `normal` `alto` `alto+`.", message).then();
+            }
+        }
+    } catch (err) {
+        sendMessage("ocurrió un error con el comando `!volumen`", message).then();
+        sendErrorConsole(err);
+    }
+}
+
 let addSongToPlaylist = (message, url) => {
     try {
         let platform = url.split(".");
@@ -273,6 +311,7 @@ let playSong = async (connection, message) => {
                     if (playlist[message.guild.id].queue[0]) {
                         playSong(connection, message);
                     } else {
+                        playlist = {};
                         connection.disconnect();
                     }
                 });

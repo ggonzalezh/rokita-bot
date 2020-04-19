@@ -37,7 +37,7 @@ let messageHasSong = (message, args) => {
 let userIsInChannel = (message) => {
     try {
         if (!message.member.voice.channel) {
-            sendMessage("tienes que estar en el canal para usar el comando `!play`", message).then();
+            sendMessage("tienes que estar en el canal para usar el comando.", message).then();
             return false;
         }else{
             return true;

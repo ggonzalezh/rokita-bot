@@ -5,7 +5,7 @@ const {getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
 const {betValidation} = require('./src/coin/helper/validation');
 const {createHelp} = require('./src/helper/discord');
 const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
-const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist} = require('./src/playlist/playlist');
+const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist, setVolumen} = require('./src/playlist/playlist');
 const {validationPlay, userInChannel} = require('./src/playlist/helper/validation');
 const {sendErrorConsole} = require('./src/helper/utils');
 const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./src/memes/memes');
@@ -60,6 +60,11 @@ client.on("message", (message) => {
             case 'resume':
                 if(userInChannel(message)){
                     resumePlaylist(message);
+                }
+                break;
+            case 'volumen':
+                if(userInChannel(message)){
+                    setVolumen(message, args[1]);
                 }
                 break;
             case "shuffle":
