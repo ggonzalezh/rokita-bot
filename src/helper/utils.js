@@ -26,10 +26,9 @@ exports.secondsToMinute = (seconds) => {
     return minutes;
 }
 
-exports.isNewDay = (value) => {
+exports.isNewDay = (date) => {
     let dateNow = moment(new Date(), 'DD/MM/YYYY').format('DD/MM/YYYY');
-    let dateDb = moment(new Date(value.user.date), 'DD/MM/YYYY').format('DD/MM/YYYY');
-    let isAfter = moment(dateNow).isAfter(dateDb);
+    let isAfter = moment(dateNow).isAfter(date);
     if(isAfter){
         return true;
     }else{

@@ -2,6 +2,7 @@ const {Client} = require("discord.js");
 const {logginCredentials} = require("./src/discord/ready")
 const {sayHello, addMemberToRole} = require("./src/discord/memberAdd");
 const {getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
+const {newUserInGame} = require('./src/experience/experience');
 const {betValidation} = require('./src/coin/helper/validation');
 const {createHelp} = require('./src/helper/discord');
 const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
@@ -80,9 +81,9 @@ client.on("message", (message) => {
             case "coins":
                 getCoins(message);
                 break;
-            case "daily":
-                dailyCoins(message);
-                break;
+            /*case "daily":
+                newUserInGame(message);
+                break;*/
             case "bet":
                 if (betValidation(message, args)) {
                     betCoins(message, args);
