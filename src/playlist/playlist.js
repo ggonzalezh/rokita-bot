@@ -14,7 +14,7 @@ exports.playSongs = (message, args) => {
                 paused: false
             }
         }
-        if (args[1].includes("https://")) {
+        if (args[1].includes(".youtube.")) {
             addSongToPlaylist(message, args[1]);
         } else {
             searchSongYoutube(message, args);
@@ -78,8 +78,8 @@ exports.resumePlaylist = (message) => {
 exports.stopPlaylist = (message) => {
     try {
         if (message.guild.voice) {
-            playlist[message.guild.id].queue.length = 0;
             if (message.guild.voice.channel) {
+                playlist[message.guild.id].queue.length = 0;
                 message.guild.voice.channel.leave();
                 playlist = {};
                 message.react('🛑').then();
@@ -207,7 +207,7 @@ let addYoutubeSong = (message, url, messageId) => {
         getSongInfo(url).then(value => {
             let songRequest = {
                 userName: message.author.username,
-                userAvatar: message.author.avatarURL,
+                userAvatar: message.author.avatarURL(),
                 songUrl: value.info.url,
                 songTitle: value.info.title
             };
@@ -327,6 +327,6 @@ let playSong = async (connection, message) => {
         sendMessage("No se ha podido reproducir la canción. **Siguiente canción** :fast_forward:", message).then();
         sendErrorConsole(err);
         playlist[message.guild.id].queue.shift();
-        playSong(connection, message).then();
+        playlist[message.guild.id].dispatcher.end();
     }
 };
