@@ -1,8 +1,8 @@
-const { insertCoins, getCoins, winCoins, loseCoins, findAllCoins } = require('../service/coinsService');
-const { sendErrorConsole } = require('../helper/utils');
-const { fillArrayWithIcons } = require('../helper/discord');
-const { sendMessage, createEmbedMessage, sendEmbedMessage } = require('../discord/message')
-const { isNewDay } = require('../helper/utils');
+const {insertCoins, getCoins, winCoins, loseCoins, findAllCoins} = require('../service/coinsService');
+const {sendErrorConsole} = require('../helper/utils');
+const {fillArrayWithIcons} = require('../helper/discord');
+const {sendMessage, createEmbedMessage, sendEmbedMessage} = require('../discord/message')
+const {isNewDay} = require('../helper/utils');
 const array = require("../helper/arrays");
 
 
@@ -14,11 +14,11 @@ exports.getCoins = (message) => {
                     name: "Propietario de la cuenta",
                     value: message.author.username
                 },
-                {
-                    name: "Coins",
-                    value: value.user.coins
-                }];
-                sendEmbedMessage(createEmbedMessage("Banco del Distrito Federal de Puno", fields, "https://image.flaticon.com/icons/png/512/275/275806.png"), message);
+                    {
+                        name: "Coins",
+                        value: value.user.coins
+                    }];
+                sendEmbedMessage(createEmbedMessage("Banco", fields, "https://image.flaticon.com/icons/png/512/275/275806.png"), message);
             } else {
                 sendMessage("no tienes coins. Usa el comando `" + "!daily`.", message);
             }
@@ -44,18 +44,14 @@ exports.dailyCoins = (message) => {
                 });
             } else {
                 if (!value.user.newUser) {
-                    if (isNewDay(value)) {
-                        insertCoins(message.author.id, message.guild.id, message.author.username).then(value => {
-                            if (!value.user.newUser) {
-                                sendMessage('se han añadido $1000 a tu cuenta. Total: $' + value.user.coins, message);
-                            }
-                        }).catch(err => {
-                            sendMessage('ocurrió un error añadiendo coins a tu cuenta', message);
-                            sendErrorConsole(err);
-                        });
-                    } else {
-                        sendMessage('ya canjeaste tus monedas diarias, inténtalo mañana', message);
-                    }
+                    insertCoins(message.author.id, message.guild.id, message.author.username).then(value => {
+                        if (!value.user.newUser) {
+                            sendMessage('se han añadido $1000 a tu cuenta. Total: $' + value.user.coins, message);
+                        }
+                    }).catch(err => {
+                        sendMessage('ocurrió un error añadiendo coins a tu cuenta', message);
+                        sendErrorConsole(err);
+                    });
                 }
             }
         }).catch(err => {

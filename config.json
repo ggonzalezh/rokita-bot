@@ -1,5 +1,16 @@
 {
     "discord": {
-        "prefix": "!"
+        "prefix": "-"
+    },
+    "puppeteer": {
+        "token": "",
+        "wikiURL": "https://dayz.gamepedia.com/",
+        "wikiParagraphsSelector": "#mw-content-text > .mw-parser-output > p",
+        "wikiInvalidPageSelector": ".noarticletext",
+        "wikiInfoboxPageContainerSelector": ".infobox-page-container ",
+        "wikiItemBoxSelector": ".infobox > tbody",
+        "width": 2500,
+        "height": 2500,
+        "enableJavascript": false
     }
 }
