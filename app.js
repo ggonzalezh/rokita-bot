@@ -50,7 +50,7 @@ client.on("message", (message) => {
         switch (args[0].toLowerCase()) {
             case "play":
                 if (validationPlay(message, args)) {
-                    playSongs(message, args, title);
+                    playSongs(message, args);
                 }
                 break;
             case "skip":

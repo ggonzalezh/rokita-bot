@@ -14,7 +14,7 @@ exports.playSongs = (message, args) => {
                 paused: false
             }
         }
-        if (args[1].includes("https://")) {
+        if (args[1].includes(".youtube.")) {
             addSongToPlaylist(message, args[1]);
         } else {
             searchSongYoutube(message, args);
