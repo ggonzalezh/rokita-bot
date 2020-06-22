@@ -6,29 +6,20 @@ const {newUserInGame} = require('./src/experience/experience');
 const {betValidation} = require('./src/coin/helper/validation');
 const {createHelp} = require('./src/helper/discord');
 const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
-const {playSongs, skipPlaylist, stopPlaylist, shufflePlaylist, getPlaylist, pausePlaylist, resumePlaylist, setVolumen} = require('./src/playlist/playlist');
+const {play, skip, stop, shuffle, playlist, pause, resume, setVolumen, testPlaylist} = require('./src/playlist/playlist');
 const {validationPlay, userInChannel} = require('./src/playlist/helper/validation');
 const {sendErrorConsole} = require('./src/helper/utils');
 const {searchItemInWiki} = require('./src/wiki/wiki');
 const {elPeruano, elEmpresario, elChileno, laProfecia, elVici} = require('./src/memes/memes');
-const { getTitle } = require("./src/firebase/getTitle.js");
 const config = require('./config.json');
 
 const prefix = config.discord.prefix;
 const client = new Client();
-let title;
 
 client.login(process.env.BOT_TOKEN).then();
 
 client.on("ready", () => {
     logginCredentials(client);
-    getTitle()
-        .then(result => {
-            title = result;
-        })
-        .catch(err => {
-            console.log(err + err);
-        });
 });
 
 client.on("guildMemberAdd", (member) => {
@@ -40,52 +31,48 @@ client.on("guildMemberAdd", (member) => {
 client.on("message", (message) => {
     let fields;
     try {
-        if (message.author.equals(client.user)) {
-            return;
-        }
-        if (!message.content.startsWith(prefix)) {
-            return;
-        }
-        let args = message.content.substring(prefix.length).split(" ");
+        if (message.author.equals(client.user)) return;
+        if (!message.content.startsWith(prefix)) return;
+        let args = message.content.substring(prefix.length).split(' ');
         switch (args[0].toLowerCase()) {
             case "play":
                 if (validationPlay(message, args)) {
-                    playSongs(message, args);
+                    play(message, args);
                 }
                 break;
             case "skip":
                 if (userInChannel(message)) {
-                    skipPlaylist(message);
+                    skip(message);
                 }
                 break;
             case "stop":
                 if (userInChannel(message)) {
-                    stopPlaylist(message);
+                    stop(message);
                 }
                 break;
             case 'pause':
                 if(userInChannel(message)){
-                    pausePlaylist(message);
+                    pause(message);
                 }
                 break;
             case 'resume':
                 if(userInChannel(message)){
-                    resumePlaylist(message);
+                    resume(message);
                 }
                 break;
-            case 'volumen':
+            /*case 'volumen':
                 if(userInChannel(message)){
                     setVolumen(message, args[1]);
                 }
-                break;
+                break;*/
             case "shuffle":
                 if (userInChannel(message)) {
-                    shufflePlaylist(message);
+                    shuffle(message);
                 }
                 break;
             case "playlist":
                 if (userInChannel(message)) {
-                    getPlaylist(message);
+                    playlist(message);
                 }
                 break;
             case "coins":
@@ -99,9 +86,9 @@ client.on("message", (message) => {
                     betCoins(message, args);
                 }
                 break;
-            case "wiki":
+            /*case "wiki":
                 searchItemInWiki(message, args);
-                break;
+                break;*/
             case "leaderboards":
                 sendMessage("comando en construcción", message).then();
                 break;

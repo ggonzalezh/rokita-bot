@@ -1,5 +1,4 @@
 const moment = require("moment");
-const timeFormat = require('hh-mm-ss');
 
 exports.formatDateToYear = (date) => {
     let formatDate = moment(date).format('YYYY');
