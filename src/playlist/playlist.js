@@ -1,7 +1,7 @@
 const {validateSongYoutube, getSongInfo, youtubeSearch, getPlaylistYoutube, validatePlaylistYoutube} = require('./helper/youtube');
 const {sendErrorConsole} = require('../helper/utils');
 const {sendMessage, sendEmbedMessage, createEmbedMessage, editMessage} = require('../discord/message');
-const ytdl = require('ytdl-core')
+const dtdl = require('ytdl-core-discord');
 
 let playlist = {};
 
@@ -19,9 +19,8 @@ exports.play = (message, args) => {
 exports.skip = (message) => {
     try {
         if (playlist[message.guild.id] && playlist[message.guild.id].dispatcher && playlist[message.guild.id].queue.length > 0) {
-            playlist[message.guild.id].dispatcher.destroy();
+            playlist[message.guild.id].dispatcher.end();
             message.react('⏩').then();
-            joinChannel(message);
         } else {
             sendMessage("no hay más canciones en la playlist.", message).then();
         }
@@ -34,7 +33,7 @@ exports.skip = (message) => {
 exports.stop = (message) => {
     try {
         if (message.guild.voice && message.guild.voice.channel) {
-            playlist[message.guild.id].dispatcher.destroy();
+            playlist[message.guild.id].dispatcher.end();
             playlist[message.guild.id].queue = [];
             message.guild.voice.channel.leave();
             message.react('🛑').then();
@@ -123,9 +122,9 @@ exports.setVolumen = (message, nivelVolumen) => {
         if (!playlist[message.guild.id] && !playlist[message.guild.id].dispatcher && nivelVolumen === undefined) return;
         if (nivelVolumen >= 0 && nivelVolumen <= 2) {
             playlist[message.guild.id].dispatcher.setVolume(nivelVolumen);
-            message.react('🔈').then();
+            (nivelVolumen) <= 1 ? message.react('🔉').then() : message.react('🔊').then();
         } else {
-            sendMessage("los niveles de volumen son: `bajo+` `bajo` `normal` `alto` `alto+`.", message).then();
+            sendMessage("los niveles de volumen van desde `0` al `2`. Acepta digitos decimales. (`0 = 0%`, `0.5 = 50%`, `1= 100%`, `1.5 = 150%`, `2 = 200%`).", message).then();
         }
     } catch (err) {
         sendMessage("ocurrió un error con el comando `!volumen`", message).then();
@@ -138,15 +137,15 @@ const addSongToPlaylist = (message, url) => {
         let platform = url.split(".");
         switch (platform[1]) {
             case "youtube":
-                if(validatePlaylistYoutube(url)){
+                if (validatePlaylistYoutube(url)) {
                     addYoutubePlaylist(message, url);
-                }else if(validateSongYoutube(url)){
+                } else if (validateSongYoutube(url)) {
                     getSongInfo(url).then(value => {
                         youtubeSearch(value.song.title).then(response => {
                             addYoutubeSong(message, response.song);
                         })
                     });
-                }else{
+                } else {
                     sendMessage("formato de canción no soportado", message).then();
                 }
                 break;
@@ -216,12 +215,12 @@ const searchSongYoutube = (message, args) => {
 
 const playSong = async (connection, message) => {
     try {
-        playlist[message.guild.id].dispatcher = connection.play(ytdl(playlist[message.guild.id].queue[0].songUrl), {
+        playlist[message.guild.id].dispatcher = connection.play(await dtdl(playlist[message.guild.id].queue[0].songUrl, {
             filter: "audioonly",
             highWaterMark: 1 << 25,
-            volume: 0.4,
-            quality: 'highestaudio'
-        }).on('finish', () => {
+            quality: 'highestaudio',
+            volume: 0.8
+        }), {type: 'opus'}).on('finish', () => {
             if (playlist[message.guild.id].queue[0]) {
                 playSong(connection, message);
             } else {
