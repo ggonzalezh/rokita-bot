@@ -11,7 +11,7 @@ exports.createHelp = () => {
                 + "`-stop`: Detiene la reproducción playlist actual.\n"
                 + "`-pause`: Pausa la reproducción de canciones de la playlist.\n"
                 + "`-resume`: Reanuda la reproducción de canciones de la playlist.\n"
-                + "`-volumen {nivel de volumen}`: Ajusta el volumen de reproducción de la playlist. Los niveles de volumen son: `bajo+` `bajo` `normal` `alto` `alto+`. \n"
+                + "`-volumen {nivel de volumen}`: Ajusta el volumen de reproducción de la playlist. los niveles de volumen van desde `0` al `2`. Acepta digitos decimales. (`0 = 0%`, `0.5 = 50%`, `1= 100%`, `1.5 = 150%`, `2 = 200%`).\n"
                 + "`-playlist`: Mostrará las siguientes 5 canciones de la playlist.\n"
                 + "`-shuffle`: Re-ordenara las canciones de la playlist."
         },

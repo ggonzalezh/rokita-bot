@@ -14,9 +14,8 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.19",
     "puppeteer": "^3.3.0",
-    "save": "^2.4.0",
-    "youtube-playlist": "^1.0.3",
     "ytdl-core": "^2.1.7",
+    "ytdl-core-discord": "^1.2.1",
     "ytpl": "^0.1.21",
     "ytsr": "^0.1.15"
   },

@@ -60,11 +60,11 @@ client.on("message", (message) => {
                     resume(message);
                 }
                 break;
-            /*case 'volumen':
+            case 'volumen':
                 if(userInChannel(message)){
                     setVolumen(message, args[1]);
                 }
-                break;*/
+                break;
             case "shuffle":
                 if (userInChannel(message)) {
                     shuffle(message);
