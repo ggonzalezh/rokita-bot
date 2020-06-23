@@ -23,10 +23,6 @@ exports.createHelp = () => {
         {
             name: "Casino de Juliaca",
             value: "`-bet`: Apuesta tus coins con este comando. Pepito paga doble."
-        },
-        {
-            name: "Éxitos del ayer y hoy",
-            value: "`-elperuano` `-elempresario` `-elchileno` `-profecia` `-vici`"
         }]
 
     return help;
