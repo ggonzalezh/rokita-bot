@@ -9,7 +9,7 @@ exports.getRanges = (level) => {
     }
 }
 
-let range = [
+const range = [
     {
         level: 1,
         name: 'El lavadora humana'

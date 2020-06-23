@@ -2,7 +2,7 @@ const {Client} = require("discord.js");
 const {logginCredentials} = require("./src/discord/ready")
 const {sayHello, addMemberToRole} = require("./src/discord/memberAdd");
 const {getCoins, betCoins, dailyCoins} = require('./src/coin/coins');
-const {newUserInGame} = require('./src/experience/experience');
+const {newUser, getStatsUser, experienceUp} = require('./src/experience/experience');
 const {betValidation} = require('./src/coin/helper/validation');
 const {createHelp} = require('./src/helper/discord');
 const {createEmbedMessage, sendMessage, sendEmbedMessage} = require('./src/discord/message');
@@ -16,7 +16,8 @@ const config = require('./config.json');
 const prefix = config.discord.prefix;
 const client = new Client();
 
-client.login(process.env.BOT_TOKEN).then();
+//client.login(process.env.BOT_TOKEN).then();
+client.login('NTczOTY4MTIwMDM3OTAwNDI2.XvF2YA.7-w4ByviWSSJU8E7OChFqm-XBEY').then();
 
 client.on("ready", () => {
     logginCredentials(client);
@@ -77,35 +78,20 @@ client.on("message", (message) => {
             case "coins":
                 getCoins(message);
                 break;
-            case "daily":
-                dailyCoins(message);
-                break;
             case "bet":
                 if (betValidation(message, args)) {
                     betCoins(message, args);
                 }
                 break;
-            /*case "wiki":
-                searchItemInWiki(message, args);
-                break;*/
-            /*case "leaderboards":
-                sendMessage("comando en construcción", message).then();
+            case "daily":
+                newUser(message);
                 break;
-            case "elperuano":
-                elPeruano(message);
+            case "stats":
+                getStatsUser(message);
                 break;
-            case "elempresario":
-                elEmpresario(message);
+            case "exp":
+                experienceUp(message);
                 break;
-            case "elchileno":
-                elChileno(message);
-                break;
-            case "profecia":
-                laProfecia(message);
-                break;
-            case "vici":
-                elVici(message);
-                break;*/
             case "ayuda":
                 fields = createHelp();
                 sendEmbedMessage(createEmbedMessage('Ayuda', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);

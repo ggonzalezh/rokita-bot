@@ -9,7 +9,7 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
 
     if (fields.length > 0) {
         for (const field of fields) {
-            embed.addField(field.name, " " + field.value)
+            (field.inline) ? embed.addField(field.name, " " + field.value, field.inline) : embed.addField(field.name, " " + field.value)
         }
     }
 
