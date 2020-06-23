@@ -24,7 +24,6 @@ client.on("ready", () => {
 
 client.on("guildMemberAdd", (member) => {
     sayHello(member);
-    addMemberToRole(member);
 });
 
 
@@ -89,7 +88,7 @@ client.on("message", (message) => {
             /*case "wiki":
                 searchItemInWiki(message, args);
                 break;*/
-            case "leaderboards":
+            /*case "leaderboards":
                 sendMessage("comando en construcción", message).then();
                 break;
             case "elperuano":
@@ -106,7 +105,7 @@ client.on("message", (message) => {
                 break;
             case "vici":
                 elVici(message);
-                break;
+                break;*/
             case "ayuda":
                 fields = createHelp();
                 sendEmbedMessage(createEmbedMessage('Ayuda', fields, 'https://image.flaticon.com/icons/png/512/682/682055.png', undefined), message);
