@@ -25,7 +25,7 @@ exports.experienceSystem = (command, message) => {
 
 const newUser = (message) => {
     getStats(message.author.id, message.guild.id).then(response => {
-        if (!response && !response._doc) {
+        if (!response) {
             addUser(message.author.id, message.guild.id, message.author.username).then(() => {
                 sendMessage('has sido ingresado. Usa el comando `-stats` para revisar tu cuenta.', message).then();
             }).catch(err => {
@@ -43,7 +43,7 @@ const newUser = (message) => {
 
 const getStatsUser = (message) => {
     getStats(message.author.id, message.guild.id).then(response => {
-        if (!response && response._doc) {
+        if (!response) {
             sendMessage('tu cuenta no se encuentra registrada en este servidor. Usa el comando `-register` para ingresar los datos de tu cuenta.', message).then();
         } else {
             let stats = [
@@ -66,7 +66,7 @@ const getStatsUser = (message) => {
 
 const experienceUp = (message) => {
     getStats(message.author.id, message.guild.id).then(user => {
-        if (!user && !user._doc) {
+        if (!user) {
             sendMessage('tu cuenta no se encuentra registrada en este servidor. Usa el comando `-register` para ingresar los datos de tu cuenta.', message).then();
         } else if (user._doc.experienceToLevelUp <= 1) {
             rangeUp(message.author.id, message.guild.id, user._doc).then(() => {
