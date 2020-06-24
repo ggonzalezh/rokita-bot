@@ -268,10 +268,12 @@ const playSong = async (connection, message) => {
             quality: 'highestaudio',
             volume: 0.8
         }), {type: 'opus'}).on('finish', () => {
-            (playlist[message.guild.id].queue[0]) ? playSong(connection, message) : (() => {
+            if (playlist[message.guild.id].queue[0]) {
+                playSong(connection, message)
+            } else {
                 playlist[message.guild.id].queue = [];
                 connection.disconnect();
-            })
+            }
         });
         let fields = [{
             name: "Titulo de la canción",
@@ -302,7 +304,7 @@ const joinChannel = (message) => {
 }
 
 const createSongRequest = (song, message) => {
-     let songRequest = {
+    let songRequest = {
         userName: message.author.username,
         userAvatar: message.author.avatarURL(),
         songUrl: song.url,

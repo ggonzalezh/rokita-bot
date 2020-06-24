@@ -1,6 +1,19 @@
-const { coin } = require('../schema/coinSchema');
+const { coinSchema } = require('../schema/coinSchema');
 const { formatDate } = require('../../helper/utils');
 
+
+exports.addToSystemCoins = async(userId, serverId, userName) =>{
+    try{
+        let newUser = new coinSchema({
+            userId: userId,
+            serverId: serverId,
+            userName: userName,
+            coins: 1
+        })
+    }catch(err){
+        sendErrorConsole(err);
+    }
+}
 exports.insertCoins = async (userId, serverId, userName) => {
     return new Promise((resolve, reject) => {
         coin.findOne({
