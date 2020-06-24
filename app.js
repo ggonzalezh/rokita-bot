@@ -10,7 +10,8 @@ const config = require('./config.json');
 const prefix = config.discord.prefix;
 const client = new Client();
 
-client.login(process.env.BOT_TOKEN).then();
+//client.login(process.env.BOT_TOKEN).then();
+client.login('NTczOTY4MTIwMDM3OTAwNDI2.XvIPcA.PIo8t57xqUnGVHV7D59PRHhX3iU').then();
 
 client.on("ready", () => {
     logginCredentials(client);
