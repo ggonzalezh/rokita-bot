@@ -2,8 +2,8 @@ const {experienceSchema} = require('../schema/experienceSchema');
 const {getRanges} = require('../helper/range');
 const {sendErrorConsole, formatDate} = require('../../helper/utils');
 
-exports.addUser = (userId, serverId, userName) => {
-    return new Promise((resolve, reject) => {
+exports.addUser = async (userId, serverId, userName) => {
+    try {
         let newUser = new experienceSchema({
             userId: userId,
             serverId: serverId,
@@ -15,94 +15,86 @@ exports.addUser = (userId, serverId, userName) => {
             totalExperience: 1,
             lastUpdate: formatDate(new Date())
         })
-        newUser.save().then(() => {
-            resolve({
-                stats: {
-                    userName: newUser.userName,
-                    level: newUser.level,
-                    range: newUser.range,
-                    experience: newUser.experience,
-                    experienceToLevelUp: newUser.experienceToLevelUp
-                }
-            })
-        }).catch(err => {
-            sendErrorConsole(err);
-        });
-    });
-}
-
-exports.getStats = (userId, serverId) => {
-    try {
-        return new Promise((resolve, reject) => {
-            experienceSchema.findOne({
-                userId: userId,
-                serverId: serverId
-            }, (err, res) => {
-                if (err) {
-                    reject({
-                        error: {
-                            err
-                        }
-                    })
-                } else if (null === res || undefined === res) {
-                    resolve({
-                        info: {
-                            userId: undefined,
-                            serverId: undefined,
-                            userName: undefined,
-                            lastUpdate: undefined,
-                            stats: {}
-                        }
-                    })
-                } else {
-                    resolve({
-                        info: {
-                            userId: res.userId,
-                            serverId: res.serverId,
-                            userName: res.userName,
-                            lastUpdate: res.lastUpdate,
-                            stats: {
-                                level: res.level,
-                                experience: res.experience,
-                                range: res.range,
-                                experienceToLevelUp: res.experienceToLevelUp,
-                                totalExperience: res.totalExperience
-                            }
-                        }
-                    })
-                }
-            })
-        })
+        return await newUser.save();
     } catch (err) {
         sendErrorConsole(err);
     }
 }
 
-exports.giveExperience = (userId, serverId, data) => {
+exports.getStats = async (userId, serverId) => {
+    const stats = await experienceSchema.findOne(
+        {
+            userId: userId,
+            serverId: serverId
+        }, (err, res) => {
+            return (err) ? (() => {
+                throw err
+            }) : res;
+        }
+    )
+    return stats;
+}
+
+exports.giveExperience = async (userId, serverId, user) => {
     try {
-        return new Promise((resolve, reject) => {
-            experienceSchema.updateOne({
+        await experienceSchema.updateOne(
+            {
                 userId: userId,
                 serverId: serverId
-            }, {
-                experience: data.info.stats.experience + 1,
-                experienceToLevelUp: data.info.stats.experienceToLevelUp - 1,
-                totalExperience: data.info.stats.totalExperience + 1,
+            },
+            {
+                experience: user.experience + 1,
+                experienceToLevelUp: user.experienceToLevelUp - 1,
+                totalExperience: user.totalExperience + 1,
                 lastUpdate: formatDate(new Date())
             }, (err, res) => {
-                if (err || undefined === res) {
-                    reject({
-                        error: {
-                            err
-                        }
-                    })
-                } else {
-                    resolve({
-                        res
-                    })
-                }
-            })
+                return (err || undefined === res) ? (() => {
+                    throw err
+                }) : res;
+            }
+        )
+    } catch (err) {
+        sendErrorConsole(err);
+        throw err;
+    }
+}
+
+exports.rangeUp = async (userId, serverId, user) => {
+    try {
+        await experienceSchema.updateOne(
+            {
+                userId: userId,
+                serverId: serverId
+            },
+            {
+                experience: 0,
+                experienceToLevelUp: 10,
+                level: user.level + 1,
+                range: getRanges(user.level + 1),
+                totalExperience: user.totalExperience + 1,
+                lastUpdate: formatDate(new Date())
+            }, (err, res) => {
+                return (err || res === undefined) ? (() => {
+                    throw err
+                }) : res;
+            });
+    } catch (err) {
+        sendErrorConsole(err);
+        throw err;
+    }
+}
+
+exports.findAllUserByGuild = async (serverId) => {
+    try {
+        let users = await experienceSchema.find({
+            serverId: serverId
+        }, (err, res) => {
+            return (err || undefined === res) ? (() => {
+                throw err
+            }) : res
         })
+
+        return users;
     } catch (err) {
         sendErrorConsole(err);
     }

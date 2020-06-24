@@ -7,8 +7,7 @@ exports.logginCredentials = (client) => {
 }
 
 let connectToMongo = () => {
-    //connectMongoDb(process.env.MONGOLAB_URI);
-    connectMongoDb('mongodb://rokitabot:PHocx2KOSPVtwviS@cluster-1-shard-00-00-mpvuc.mongodb.net:27017,cluster-1-shard-00-01-mpvuc.mongodb.net:27017,cluster-1-shard-00-02-mpvuc.mongodb.net:27017/test?ssl=true&replicaSet=Cluster-1-shard-0&authSource=admin&retryWrites=true&w=majority');
+    connectMongoDb(process.env.MONGOLAB_URI);
 }
 
 let setActivityBot = (client) => {

@@ -1,4 +1,4 @@
-const {insertCoins, getCoins, winCoins, loseCoins, findAllCoins} = require('../service/coinsService');
+const {insertCoins, getCoins, winCoins, loseCoins, findAllCoins} = require('./service/coinsService');
 const {sendErrorConsole} = require('../helper/utils');
 const {fillArrayWithIcons} = require('../helper/discord');
 const {sendMessage, createEmbedMessage, sendEmbedMessage} = require('../discord/message')
@@ -6,7 +6,15 @@ const {isNewDay} = require('../helper/utils');
 const array = require("../helper/arrays");
 
 
-exports.getCoins = (message) => {
+exports.coinsSystem = (message, args) => {
+    try{
+
+    }catch(err){
+
+    }
+}
+
+const getCoins = (message) => {
     try {
         getCoins(message.author.id, message.guild.id).then(value => {
             if (value.user.coins !== undefined) {
