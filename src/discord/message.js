@@ -9,7 +9,7 @@ exports.createEmbedMessage = (author = undefined, fields = undefined, thumbNail 
 
     if (fields.length > 0) {
         for (const field of fields) {
-            embed.addField(field.name, " " + field.value)
+            (field.inline) ? embed.addField(field.name, " " + field.value, field.inline) : embed.addField(field.name, " " + field.value)
         }
     }
 
@@ -64,4 +64,19 @@ let sendMessageId = (text, message) => {
             })
         )
     })
+}
+
+exports.createEmbedLeaderboards = (array, message) => {
+    let embed = new MessageEmbed();
+    let i = 1;
+    embed.setAuthor(`Tabla de MMR | ${message.guild.name}`, message.guild.iconURL());
+    embed.setDescription(array.map(value => {
+        let medal = '';
+        (i === 1) ? medal = '🥇' : (i === 2) ? medal = '🥈' : (i===3) ? medal ='🥉' : medal= '🎖️'
+        let frase =`${medal} ${value.userName} - Nivel ${value.level}`;
+        i++
+        return frase;
+    }))
+
+    return embed
 }

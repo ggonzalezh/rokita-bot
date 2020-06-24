@@ -9,18 +9,18 @@ exports.getRanges = (level) => {
     }
 }
 
-let range = [
+const range = [
     {
         level: 1,
-        name: 'El lavadora humana'
-    },
-    {
-        level: 2,
         name: 'Peruano ADN de perdedor'
     },
     {
-        level: 3,
+        level: 2,
         name: 'Chibolo'
+    },
+    {
+        level: 3,
+        name: 'You wanna play with Yawar? I dont careeee.'
     },
     {
         level: 4,
@@ -36,18 +36,14 @@ let range = [
     },
     {
         level: 7,
-        name: 'You wanna play with Yawar? I dont careeee.'
+        name: 'EL PERUANOOOOOOOOOOOOOOO'
     },
     {
         level: 8,
-        name: 'El Cacha Cholas'
-    },
-    {
-        level: 9,
         name: 'EL EMPRESARIOOOOOOOOOOOOOOOO'
     },
     {
-        level: 10,
-        name: 'King EGG'
+        level: 9,
+        name: 'Cacha Cholas'
     }
 ];

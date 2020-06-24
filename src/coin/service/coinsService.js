@@ -1,8 +1,52 @@
-const { coin } = require('../coin/model/coinSchema');
-const { formatDate } = require('../helper/utils');
+const { coin } = require('../schema/coinSchema');
+const { formatDate } = require('../../helper/utils');
 
 exports.insertCoins = async (userId, serverId, userName) => {
-    return await insertCoinService(userId, serverId, userName);
+    return new Promise((resolve, reject) => {
+        coin.findOne({
+            userID: userId,
+            serverID: serverId
+        }, (err, res) => {
+            if (err) {
+                reject({
+                    error: {
+                        err
+                    }
+                })
+            } else {
+                let dateNow = formatDate(new Date());
+                if (res == null) {
+                    let newUser = new coin({
+                        userID: userId,
+                        serverID: serverId,
+                        userName: userName,
+                        coins: 1000,
+                        date: dateNow
+                    })
+                    newUser.save().catch(err => console.log(err));
+                    resolve({
+                        user: {
+                            userName: newUser.userName,
+                            coins: newUser.coins,
+                            newUser: true
+                        }
+                    })
+                } else {
+                    res.coins = res.coins + 1000;
+                    res.date = dateNow;
+                    res.save().catch(err => console.log(err));
+                    resolve({
+                        user: {
+                            userName: res.userName,
+                            coins: res.coins,
+                            date: res.date,
+                            newUser: false
+                        }
+                    })
+                }
+            }
+        });
+    });
 };
 
 exports.getCoins = async (userId, serverId) => {
@@ -55,51 +99,7 @@ let getCoinService = (userId, serverId) => {
 }
 
 let insertCoinService = (userId, serverId, userName) => {
-    return new Promise((resolve, reject) => {
-        coin.findOne({
-            userID: userId,
-            serverID: serverId
-        }, (err, res) => {
-            if (err) {
-                reject({
-                    error: {
-                        err
-                    }
-                })
-            } else {
-                let dateNow = formatDate(new Date());
-                if (res == null) {
-                    let newUser = new coin({
-                        userID: userId,
-                        serverID: serverId,
-                        userName: userName,
-                        coins: 1000,
-                        date: dateNow
-                    })
-                    newUser.save().catch(err => console.log(err));
-                    resolve({
-                        user: {
-                            userName: newUser.userName,
-                            coins: newUser.coins,
-                            newUser: true
-                        }
-                    })
-                } else {
-                    res.coins = res.coins + 1000;
-                    res.date = dateNow;
-                    res.save().catch(err => console.log(err));
-                    resolve({
-                        user: {
-                            userName: res.userName,
-                            coins: res.coins,
-                            date: res.date,
-                            newUser: false
-                        }
-                    })
-                }
-            }
-        });
-    });
+
 }
 
 let winCoinsService = (userId, serverId, coinsAdded) => {

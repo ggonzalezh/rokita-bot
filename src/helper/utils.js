@@ -15,28 +15,14 @@ exports.formatDateToDay = (date) => {
     return formatDate;
 }
 
-exports.formatDate = (date) => {
-    let formatDate = moment(date).format('DD/MM/YYYY');
-    return formatDate;
-}
+exports.formatDate = (date) => moment(date).format('YYYY-MM-DD');
 
-exports.secondsToMinute = (seconds) => {
-    let minutes = timeFormat.fromS(seconds, 'mm:ss')
-    return minutes;
-}
-
-exports.isNewDay = (value) => {
-    let dateNow = moment(new Date(), 'DD/MM/YYYY').format('DD/MM/YYYY');
-    let isAfter = moment(value.user.date).isAfter(dateNow);
-    if(isAfter){
-        return true;
-    }else{
-        return false;
-    }
-}
+exports.isNewDay = (dateLastUpdate) => moment(new Date(), 'YYYY-MM-DD').isAfter(dateLastUpdate, 'day');
 
 exports.sendErrorConsole = (error) => {
     console.log("----------ERROR----------");
     console.log(error);
     console.log("----------FIN----------")
 }
+
+const format = (date) => moment(date).format('YYYY/MM/YYYY');

@@ -7,10 +7,9 @@ const schema = mongoose.Schema({
     level: Number,
     experience: Number,
     range: String,
-    nextExperienceToLevelUp: Number,
+    experienceToLevelUp: Number,
+    totalExperience: Number,
     lastUpdate: String
 });
 
-let experienceSchema = mongoose.model("level", schema);
-
-exports.experience = experienceSchema;
+exports.experienceSchema = mongoose.model("experience", schema);
