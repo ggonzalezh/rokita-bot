@@ -27,21 +27,21 @@ const registerUser = (message) => {
         if (!userExperience && !userCoins) {
             Promise.all([insertUserStats(message.author.id, message.guild.id, message.author.username), insertUserCoins(message.author.id, message.guild.id, message.author.username)])
                 .then(() => {
-                    sendMessage(`has sido ingresado exitosamente en el servidor \`${message.guild.name}\`. Usa el comando \`-stats\` para revisar tu cuenta.`, message).then();
+                    sendMessage(`has sido ingresado exitosamente en el servidor \`${message.guild.name}\`. Usa el comando \`-cuenta\` para revisar tu cuenta.`, message).then();
                 }).catch((err) => {
                 sendMessage("ocurrió un error registrando tu cuenta en el \`Sistema de Experiencia\` y en el \`Sistema de Economía\`. Intentalo más tarde.", message).then();
                 sendErrorConsole(err);
             });
         } else if (!userExperience) {
             insertUserStats(message.author.id, message.guild.id, message.author.username).then(() => {
-                sendMessage(`has sido ingresado exitosamente en el \`Sistema de Experiencia\` del servidor \`${message.guild.name}\`. Usa el comando \`-stats\` para revisar tu cuenta.`, message).then();
+                sendMessage(`has sido ingresado exitosamente en el \`Sistema de Experiencia\` del servidor \`${message.guild.name}\`. Usa el comando \`-cuenta\` para revisar tu cuenta.`, message).then();
             }).catch((err) => {
                 sendMessage("ocurrió un error registrando tu cuenta en el \`Sistema de Experiencia\`. Intentalo más tarde.", message).then();
                 sendErrorConsole(err);
             });
         } else if (!userCoins) {
             insertUserCoins(message.author.id, message.guild.id, message.author.username).then(() => {
-                sendMessage(`has sido ingresado exitosamente en el \`Sistema de Economía\` del servidor \`${message.guild.name}\`. Usa el comando \`-stats\` para revisar tu cuenta.`, message).then();
+                sendMessage(`has sido ingresado exitosamente en el \`Sistema de Economía\` del servidor \`${message.guild.name}\`. Usa el comando \`-cuenta\` para revisar tu cuenta.`, message).then();
             }).catch((err) => {
                 sendMessage("ocurrió un error registrando tu cuenta en el \`Sistema de Economía\`. Intentalo más tarde.", message).then();
                 sendErrorConsole(err);
