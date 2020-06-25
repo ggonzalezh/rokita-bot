@@ -2,18 +2,19 @@ const {experienceSchema} = require('../schema/experienceSchema');
 const {getRanges} = require('../helper/range');
 const {sendErrorConsole, formatDate} = require('../../helper/utils');
 
-exports.addUser = async (userId, serverId, userName) => {
+exports.insertUserStats = async (userId, serverId, userName) => {
     try {
         let newUser = new experienceSchema({
+
             userId: userId,
             serverId: serverId,
             userName: userName,
             level: 1,
-            experience: 1,
+            experience: 0,
             range: getRanges(1),
             experienceToLevelUp: 10,
             totalExperience: 1,
-            lastUpdate: formatDate(new Date())
+            lastUpdate: '1900-01-01'
         })
         return await newUser.save();
     } catch (err) {
@@ -21,12 +22,17 @@ exports.addUser = async (userId, serverId, userName) => {
     }
 }
 
-exports.getStats = async (userId, serverId) => {
+exports.getExperienceStats = async (userId, serverId) => {
     const stats = await experienceSchema.findOne(
         {
             userId: userId,
             serverId: serverId
-        }, (err, res) => {
+        },
+        {},
+        {
+            lean: true
+        },
+        (err, res) => {
             return (err) ? (() => {
                 throw err
             }) : res;
@@ -35,7 +41,7 @@ exports.getStats = async (userId, serverId) => {
     return stats;
 }
 
-exports.giveExperience = async (userId, serverId, user) => {
+exports.insertExperience = async (userId, serverId, user) => {
     try {
         await experienceSchema.updateOne(
             {
@@ -84,7 +90,7 @@ exports.rangeUp = async (userId, serverId, user) => {
     }
 }
 
-exports.findAllUserByGuild = async (serverId) => {
+exports.findAllUserStatsByServer = async (serverId) => {
     try {
         let users = await experienceSchema.find({
             serverId: serverId

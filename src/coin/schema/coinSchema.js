@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-    userID : String,
-    serverID : String,
+    userId : String,
+    serverId : String,
     userName: String,
     coins: Number,
-    date: String
+    lastUpdate: String
 });
 
 exports.coinSchema = mongoose.model("coins", schema);

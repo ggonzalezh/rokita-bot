@@ -69,7 +69,7 @@ let sendMessageId = (text, message) => {
 exports.createEmbedLeaderboards = (array, message) => {
     let embed = new MessageEmbed();
     let i = 1;
-    embed.setAuthor(`Tabla de MMR | ${message.guild.name}`, message.guild.iconURL());
+    embed.setAuthor(`Tabla de Líderes | ${message.guild.name}`, message.guild.iconURL());
     embed.setDescription(array.map(value => {
         let medal = '';
         (i === 1) ? medal = '🥇' : (i === 2) ? medal = '🥈' : (i===3) ? medal ='🥉' : medal= '🎖️'
