@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-    userId : String,
-    serverId : String,
+    userId : Number,
+    serverId : Number,
     userName: String,
     coins: Number,
     lastUpdate: String
