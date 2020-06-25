@@ -6,23 +6,23 @@ exports.createHelp = () => {
         },
         {
             name: "Música",
-            value: "`-play {link/titulo}`: Toca tu música preferida de Youtube en el canal. Puedes usar el link de la canción/playlist o buscarla por el título de la canción.\n   "
+            value:
+                "`-play {link|titulo}`: Toca tu música preferida de Youtube en el canal. Puedes usar el link de la canción/playlist o buscarla por el título de la canción.\n   "
                 + "`-skip`: Reproduce la siguiente canción de la playlist.\n"
                 + "`-stop`: Detiene la reproducción playlist actual.\n"
                 + "`-pause`: Pausa la reproducción de canciones de la playlist.\n"
                 + "`-resume`: Reanuda la reproducción de canciones de la playlist.\n"
-                + "`-volumen {nivel de volumen}`: Ajusta el volumen de reproducción de la playlist. los niveles de volumen van desde `0` al `2`. Acepta digitos decimales. (`0 = 0%`, `0.5 = 50%`, `1= 100%`, `1.5 = 150%`, `2 = 200%`).\n"
+                + "`-volumen {nivel de volumen}`: Ajusta el volumen de reproducción de la playlist. los niveles de volumen van desde `0` al `2`.\n"
                 + "`-playlist`: Mostrará las siguientes 5 canciones de la playlist.\n"
                 + "`-shuffle`: Re-ordenara las canciones de la playlist."
         },
         {
-            name: "Banco del Distrito Federal de Puno",
-            value: "`-daily`: Te hará entrega de $1000 coins en el servidor. Solo se puede usar una vez al día.\n"
-                + "`-coins`: Te indicara cuantas coins en el servidor",
-        },
-        {
-            name: "Casino de Juliaca",
-            value: "`-bet`: Apuesta tus coins con este comando. Pepito paga doble."
+            name: "Misión diaria",
+            value:
+                "`-registrar`: Registra tu cuenta en el servidor.\n   "
+                + "`-recompensa`: Obtienes la recompensa diaria del servidor.\n"
+                + "`-cuenta`: Despliega los datos de tu cuenta.\n"
+                + "`-tabla`: Despliega la tabla de líderes."
         }]
 
     return help;
