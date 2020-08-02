@@ -23,6 +23,10 @@ exports.createHelp = () => {
                 + "`-recompensa`: Obtienes la recompensa diaria del servidor.\n"
                 + "`-cuenta`: Despliega los datos de tu cuenta.\n"
                 + "`-tabla`: Despliega la tabla de líderes."
+        },
+        {
+            name: "Página Web",
+            value:`[Rokita-BOT](https://rokitabot-cfc7e.web.app/)`
         }]
 
     return help;
