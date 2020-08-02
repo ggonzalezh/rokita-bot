@@ -46,6 +46,8 @@ const registerUser = (message) => {
                 sendMessage("ocurrió un error registrando tu cuenta en el \`Sistema de Economía\`. Intentalo más tarde.", message).then();
                 sendErrorConsole(err);
             });
+        }else{
+            sendMessage(`ya te encuentras registrado en el servidor \`${message.guild.name}\`. Usa el comando \`-cuenta\` para revisar tu cuenta.`, message).then();
         }
     }).catch((err) => {
         sendMessage(`ocurrió un error registrando tu cuenta en el servidor \`${message.guild.name}\`. Intentalo más tarde.`, message).then();

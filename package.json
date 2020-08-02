@@ -12,14 +12,13 @@
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.2.0",
     "moment": "^2.27.0",
-    "mongoose": "^5.9.19",
-    "puppeteer": "^3.3.0",
+    "mongoose": "^5.9.23",
     "ytdl-core": "^2.1.7",
     "ytdl-core-discord": "^1.2.1",
-    "ytpl": "^0.1.21",
+    "ytpl": "^0.1.22",
     "ytsr": "^0.1.15"
   },
   "devDependencies": {
-    "eslint": "^7.3.0"
+    "eslint": "^7.4.0"
   }
 }
