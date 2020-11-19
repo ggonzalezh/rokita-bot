@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "RokitaBot",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node --experimental-json-modules ./src/app.js"
   },
   "author": "ggonzalezh",
   "license": "ISC",
@@ -13,10 +14,12 @@
     "discord.js": "^12.2.0",
     "moment": "^2.27.0",
     "mongoose": "^5.9.23",
+    "pino": "^6.7.0",
+    "pino-pretty": "^4.3.0",
     "ytdl-core": "^2.1.7",
     "ytdl-core-discord": "^1.2.1",
     "ytpl": "^0.1.22",
-    "ytsr": "^0.1.15"
+    "ytsr": "git://github.com/TimeForANinja/node-ytsr.git#wip-api-adjustments"
   },
   "devDependencies": {
     "eslint": "^7.4.0"

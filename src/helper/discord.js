@@ -1,4 +1,4 @@
-exports.createHelp = () => {
+const createHelp = () => {
     let help = [
         {
             name: "¿Cómo usar el bot?",
@@ -32,7 +32,7 @@ exports.createHelp = () => {
     return help;
 }
 
-exports.fillArrayWithIcons = (icons) => {
+const fillArrayWithIcons = (icons) => {
     let array = [];
     for (let index = 0; index < 3; index++) {
         array.push(icons[Math.floor(Math.random() * icons.length)])
@@ -40,3 +40,5 @@ exports.fillArrayWithIcons = (icons) => {
 
     return array;
 }
+
+export {createHelp, fillArrayWithIcons}

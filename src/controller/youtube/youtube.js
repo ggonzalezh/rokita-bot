@@ -1,8 +1,8 @@
-const ytdl = require("ytdl-core");
-const ytsr = require('ytsr');
-const ytpl = require('ytpl');
+import ytdl from 'ytdl-core'
+import ytsr from 'ytsr'
+import ytpl from 'ytpl'
 
-exports.getPlaylistYoutube = (uri) => {
+const getPlaylistYoutube = (uri) => {
     return new Promise((resolve, reject) => {
         ytpl(uri, {limit: 100},(err, res) => {
             if(err || undefined === res){
@@ -22,7 +22,7 @@ exports.getPlaylistYoutube = (uri) => {
     })
 }
 
-exports.getSongInfo = (uri) => {
+const getSongInfo = (uri) => {
     return new Promise((resolve, reject) => {
         ytdl.getBasicInfo(uri, (err, res) => {
             if (err || undefined === res) {
@@ -42,7 +42,7 @@ exports.getSongInfo = (uri) => {
     })
 };
 
-exports.youtubeSearch = (songName) => {
+const youtubeSearch = (songName) => {
     return new Promise((resolve, reject) => {
         ytsr(songName, (err, res) => {
             if (err || undefined === res) {
@@ -65,6 +65,6 @@ exports.youtubeSearch = (songName) => {
     })
 };
 
-exports.validateSongYoutube = (uri) => ytdl.validateURL(uri);
-exports.validatePlaylistYoutube = (url) => ytpl.validateURL(url);
+const validateSongYoutube = (uri) => ytdl.validateURL(uri);
+const validatePlaylistYoutube = (url) => ytpl.validateURL(url);
 

@@ -1,15 +1,11 @@
-const { connectMongoDb } = require('../service/connectService');
+import { connectMongodb } from '../config/database.js'
 
-exports.logginCredentials = (client) => {
-    connectToMongo();
-    setActivityBot(client);
-    console.log("RokitaBOT ON!");
+const start = (client) => {
+    connectMongodb()
+    setActivity(client)
+    console.log("RokitaBOT ON!")
 }
 
-let connectToMongo = () => {
-    connectMongoDb(process.env.MONGOLAB_URI);
-}
+const setActivity = (client) => client.user.setActivity("-ayuda").then();
 
-let setActivityBot = (client) => {
-    client.user.setActivity("-ayuda").then();
-}
+export { start }

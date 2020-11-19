@@ -1,4 +1,4 @@
-const {validateSongYoutube, getSongInfo, youtubeSearch, getPlaylistYoutube, validatePlaylistYoutube} = require('./helper/youtube');
+const {validateSongYoutube, getSongInfo, youtubeSearch, getPlaylistYoutube, validatePlaylistYoutube} = require('../controller/youtube/youtube');
 const {validationPlay, userInChannel} = require('./helper/validation')
 const {sendErrorConsole} = require('../helper/utils');
 const {sendMessage, sendEmbedMessage, createEmbedMessage, editMessage} = require('../discord/message');
